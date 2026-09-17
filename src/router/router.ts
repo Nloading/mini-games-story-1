@@ -1,18 +1,21 @@
+import { createHomePage } from '../pages/home.page';
+
 type RouteHandler = (container: HTMLElement) => void;
 
 const routes: Record<string, RouteHandler> = {
   '/': (container) => {
-    container.innerHTML = '<h1>Home</h1>';
+    container.replaceChildren(createHomePage());
   },
 };
 
 export const router = {
   init(container: HTMLElement) {
     const render = () => {
-      const path = location.pathname || '/';
+      const path = window.location.pathname || '/';
       const handler = routes[path] || routes['/'];
       handler(container);
     };
+
     window.addEventListener('popstate', render);
     render();
   },

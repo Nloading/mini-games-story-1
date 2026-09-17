@@ -9,8 +9,10 @@
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "./",
-    "paths": {}
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src"]
 }
