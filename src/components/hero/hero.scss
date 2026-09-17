@@ -1,0 +1,33 @@
+@use '../../styles/abstracts' as *;
+
+.hero {
+  background-color: $color-bg-card-alt;
+}
+
+.hero__inner {
+  @include container;
+  padding-block: $space-7;
+
+  @include respond-up('tablet') {
+    padding-block: $space-9;
+  }
+}
+
+.hero__content {
+  max-width: 640px;
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+
+  p {
+    color: $color-text-secondary;
+  }
+
+  .btn {
+    align-self: flex-start;
+  }
+}

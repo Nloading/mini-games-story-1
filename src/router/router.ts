@@ -10,9 +10,16 @@ const routes: Record<string, RouteHandler> = {
 
 export const router = {
   init(container: HTMLElement) {
+    const fallbackHandler = routes['/'];
+
     const render = () => {
       const path = window.location.pathname || '/';
-      const handler = routes[path] || routes['/'];
+      const handler = routes[path] ?? fallbackHandler;
+
+      if (!handler) {
+        return;
+      }
+
       handler(container);
     };
 
