@@ -1,0 +1,162 @@
+// Design tokens generated from the provided color, size, shadow, and typography specs.
+
+// Base size scale
+$size-05: 4px;
+$size-1: 8px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-5: 40px;
+$size-6: 48px;
+$size-7: 56px;
+$size-8: 64px;
+$size-9: 72px;
+$size-10: 80px;
+$size-11: 88px;
+$size-12: 96px;
+$size-13: 104px;
+$size-14: 112px;
+$size-15: 120px;
+
+// Corner radius
+$radius-extra-small: 4px;
+$radius-small: 8px;
+$radius-medium: 12px;
+$radius-large: 16px;
+$radius-extra-large: 24px;
+$radius-full: 9999px;
+
+// Button padding
+$btn-padding-large: 24px 16px;
+$btn-padding-medium: 20px 10px;
+$btn-padding-small: 16px 8px;
+$btn-padding-icon: 8px;
+
+// Shadows
+$shadow-level-1: 0 4px 4px rgba(36, 33, 69, 0.12);
+$shadow-level-2: 0 6px 6px rgba(36, 33, 69, 0.12);
+$shadow-level-3: 0 8px 8px rgba(36, 33, 69, 0.12);
+
+// Typography size tokens
+$font-display-large: 56px;
+$font-display-medium: 36px;
+$font-display-small: 24px;
+$font-headline-large: 32px;
+$font-headline-medium: 24px;
+$font-headline-small: 20px;
+$font-body-large: 18px;
+$font-body-medium: 16px;
+$font-body-small: 14px;
+$font-label-extra-large: 16px;
+$font-label-large: 14px;
+$font-label-medium: 12px;
+$font-label-small: 10px;
+
+// Typography weight tokens
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// Typography font family tokens
+$font-family-text: 'Inter', 'Roboto', sans-serif;
+
+// Color palette
+$color-white: #ffffff;
+$color-black: #000000;
+$color-bg: #f9f8f3;
+$color-on-bg: #5f5d75;
+$color-on-bg-low: #737380;
+$color-bg-footer: #1e1b3a;
+$color-bg-footer-low: #2a264f;
+$color-bg-footer-lowest: #3c376e;
+$color-on-bg-footer: #b9b5c9;
+$color-surface: #fff9e5;
+$color-surface-low: #fffcf5;
+$color-primary: #ffd02b;
+$color-primary-low: #fde047;
+$color-primary-high: #e5b800;
+$color-on-primary: #242145;
+$color-secondary: #f0eeff;
+$color-tertiary: #3a2ebf;
+$color-like: #ff4b4b;
+$color-error: #b3261e;
+$color-price-free: #0b8a8f;
+$color-outline: #e5e7eb;
+$color-outline-variant: #d2d2d2;
+$color-avatar-random-1: #e9eef6;
+$color-avatar-random-2: #a3e2c9;
+$color-avatar-random-3: #bce3ff;
+$color-avatar-random-4: #ffc6ff;
+$color-avatar-random-5: #e8dff5;
+
+// Compatibility aliases used by the existing component styles
+$color-bg-card: $color-white;
+$color-bg-card-alt: $color-surface-low;
+$color-text-primary: $color-on-bg;
+$color-text-secondary: $color-on-bg-low;
+$color-text-inverse: $color-on-bg-footer;
+$color-brand: $color-primary;
+$color-brand-strong: $color-primary-high;
+$radius-lg: $radius-large;
+$shadow-card: $shadow-level-2;
+$space-1: $size-1;
+$space-2: $size-2;
+$space-3: $size-3;
+$space-4: $size-4;
+$space-5: $size-5;
+$space-6: $size-6;
+$space-7: $size-7;
+$space-8: $size-8;
+$space-9: $size-9;
+$space-10: $size-10;
+$space-11: $size-11;
+$space-12: $size-12;
+$space-13: $size-13;
+$space-14: $size-14;
+$space-15: $size-15;
+
+:root {
+  --color-white: #{$color-white};
+  --color-black: #{$color-black};
+  --color-bg: #{$color-bg};
+  --color-on-bg: #{$color-on-bg};
+  --color-on-bg-low: #{$color-on-bg-low};
+  --color-bg-footer: #{$color-bg-footer};
+  --color-bg-footer-low: #{$color-bg-footer-low};
+  --color-bg-footer-lowest: #{$color-bg-footer-lowest};
+  --color-on-bg-footer: #{$color-on-bg-footer};
+  --color-surface: #{$color-surface};
+  --color-surface-low: #{$color-surface-low};
+  --color-primary: #{$color-primary};
+  --color-primary-low: #{$color-primary-low};
+  --color-primary-high: #{$color-primary-high};
+  --color-on-primary: #{$color-on-primary};
+  --color-secondary: #{$color-secondary};
+  --color-tertiary: #{$color-tertiary};
+  --color-like: #{$color-like};
+  --color-error: #{$color-error};
+  --color-price-free: #{$color-price-free};
+  --color-outline: #{$color-outline};
+  --color-outline-variant: #{$color-outline-variant};
+
+  --font-display-large: #{$font-display-large};
+  --font-display-medium: #{$font-display-medium};
+  --font-display-small: #{$font-display-small};
+  --font-headline-large: #{$font-headline-large};
+  --font-headline-medium: #{$font-headline-medium};
+  --font-headline-small: #{$font-headline-small};
+  --font-body-large: #{$font-body-large};
+  --font-body-medium: #{$font-body-medium};
+  --font-body-small: #{$font-body-small};
+  --font-label-extra-large: #{$font-label-extra-large};
+  --font-label-large: #{$font-label-large};
+  --font-label-medium: #{$font-label-medium};
+  --font-label-small: #{$font-label-small};
+
+  --font-weight-regular: #{$font-weight-regular};
+  --font-weight-medium: #{$font-weight-medium};
+  --font-weight-bold: #{$font-weight-bold};
+  --font-weight-extra-bold: #{$font-weight-extra-bold};
+  --font-family-text: #{$font-family-text};
+}
