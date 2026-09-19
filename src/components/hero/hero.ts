@@ -1,7 +1,11 @@
+import './hero.scss';
+import heroImage from '../../assets/images/hero.png';
+
 export function createHero(): HTMLElement {
   const section = document.createElement('section');
   section.className = 'hero';
   section.innerHTML = `
+    <img class="hero__bg" src="${heroImage}" alt="hero image"/>
     <div class="hero__inner">
       <div class="hero__content">
         <h1>Take a Short Break &amp; Have Fun</h1>
