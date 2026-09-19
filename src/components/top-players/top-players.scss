@@ -1,0 +1,115 @@
+@use '../../styles/abstracts' as *;
+
+.top-players__inner {
+  @include container;
+  padding-bottom: $space-7;
+}
+
+.top-players__table-wrap {
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.top-players__table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  background-color: $color-white;
+
+  th,
+  td {
+    padding: $space-3 $space-4;
+    text-align: left;
+    font-size: $font-body-small;
+    white-space: nowrap;
+  }
+
+  thead th {
+    background-color: $color-tertiary;
+    color: $color-white;
+    font-size: $font-label-large;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: $color-surface-low;
+  }
+
+  tbody tr:not(:last-child) {
+    border-bottom: 1px solid $color-outline;
+  }
+}
+
+.rank-cell {
+  font-weight: $font-weight-bold;
+  color: $color-on-bg;
+
+  &--top {
+    color: $color-primary-high;
+  }
+}
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg;
+}
+
+.avatar {
+  width: $size-4;
+  height: $size-4;
+  border-radius: $radius-full;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-label-medium;
+  font-weight: $font-weight-bold;
+  color: $color-on-bg;
+
+  &--1 {
+    background-color: $color-avatar-random-1;
+  }
+  &--2 {
+    background-color: $color-avatar-random-2;
+  }
+  &--3 {
+    background-color: $color-avatar-random-3;
+  }
+  &--4 {
+    background-color: $color-avatar-random-4;
+  }
+  &--5 {
+    background-color: $color-avatar-random-5;
+  }
+}
+
+.streak {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-05;
+  font-weight: $font-weight-medium;
+}
+
+.chip {
+  display: inline-block;
+  border: 1px solid $color-outline;
+  border-radius: $radius-full;
+  padding: $size-05 $space-2;
+  font-size: $font-label-medium;
+  color: $color-on-bg;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

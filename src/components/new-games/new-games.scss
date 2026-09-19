@@ -1,0 +1,135 @@
+@use '../../styles/abstracts' as *;
+
+.new-games__inner {
+  @include container;
+  padding-block: $space-7;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-4;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: $font-headline-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    margin: 0;
+  }
+}
+
+.section-heading__bar {
+  width: $size-05;
+  height: $size-4;
+  border-radius: $radius-full;
+  background-color: $color-primary;
+  display: inline-block;
+}
+
+.new-games__controls {
+  display: flex;
+  gap: $space-2;
+}
+
+.icon-btn {
+  width: $size-6;
+  height: $size-6;
+  border-radius: $radius-full;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.icon-btn--outline {
+  background-color: $color-white;
+  border: 1px solid $color-outline-variant;
+}
+
+.icon-btn--primary {
+  background-color: $color-primary;
+}
+
+.game-list {
+  display: flex;
+  gap: $space-3;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.game-card {
+  position: relative;
+  flex: 0 0 220px;
+  aspect-ratio: 3 / 4;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  scroll-snap-align: start;
+
+  &--featured {
+    flex: 0 0 480px;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.game-card__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-card__badge {
+  position: absolute;
+  right: $space-3;
+  bottom: $space-3;
+  color: $color-white;
+  font-size: $font-display-small;
+  font-weight: $font-weight-extra-bold;
+  opacity: 0.9;
+}
+
+.game-card__overlay {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: $space-3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $space-2;
+  background: linear-gradient(to top, rgba($color-black, 0.65), rgba($color-black, 0));
+}
+
+.game-card__title {
+  color: $color-white;
+  font-size: $font-body-medium;
+  font-weight: $font-weight-bold;
+  margin: 0;
+}
+
+.game-card__meta {
+  display: flex;
+  gap: $space-2;
+  flex-shrink: 0;
+}
+
+.game-card__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-05;
+  color: $color-white;
+  font-size: $font-label-large;
+  font-weight: $font-weight-medium;
+}

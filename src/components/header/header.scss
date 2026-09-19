@@ -1,0 +1,114 @@
+@use '../../styles/abstracts' as *;
+
+.site-header {
+  border-bottom: 1px solid $color-outline;
+  background-color: $color-bg;
+}
+
+.site-header__inner {
+  @include container;
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+  padding-block: $space-3;
+}
+
+.site-header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-size: $font-headline-small;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.site-header__logo-icon {
+  width: $size-3;
+  height: $size-3;
+  background-color: $color-primary;
+}
+
+.site-header__nav {
+  display: none;
+  align-items: center;
+  gap: $space-5;
+
+  @include respond-up('tablet') {
+    display: flex;
+  }
+
+  a {
+    color: $color-on-bg;
+    font-size: $font-body-medium;
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+
+    &[aria-current='page'],
+    &:hover {
+      color: $color-on-primary;
+    }
+  }
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 0;
+}
+
+.btn--outline {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-width: 82px;
+  height: 37px;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 2px solid #242145;
+  border-radius: 8px;
+  color: #242145;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-on-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.btn--primary {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-width: 93px;
+  height: 37px;
+  padding: 10px 20px;
+  background: #ffd02b;
+  border: 2px solid #242145;
+  border-radius: 8px;
+  color: #242145;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.btn--sm {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 17px;
+  min-height: 37px;
+}
