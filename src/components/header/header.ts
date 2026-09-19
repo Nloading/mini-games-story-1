@@ -1,6 +1,8 @@
 import './header.scss';
 import logoIcon from '../../assets/images/logo.png';
 
+import { router } from '../../router/router';
+
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
   header.className = 'site-header';
@@ -24,5 +26,20 @@ export function createHeader(): HTMLElement {
       </div>
     </div>
   `;
+
+  header.querySelectorAll('a[href^="/"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const target = event.currentTarget as HTMLAnchorElement;
+      const href = target.getAttribute('href');
+
+      if (!href || href.startsWith('#')) {
+        return;
+      }
+
+      event.preventDefault();
+      router.navigate(href);
+    });
+  });
+
   return header;
 }

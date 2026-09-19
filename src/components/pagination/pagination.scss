@@ -1,0 +1,47 @@
+@use '../../styles/abstracts' as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding-block: $space-6;
+}
+
+.pagination__page,
+.pagination__arrow {
+  width: $size-5;
+  height: $size-5;
+  border-radius: $radius-full;
+  border: $border-width-medium solid $color-on-primary;
+  background-color: $color-white;
+  color: $color-on-primary;
+  font-size: $font-body-small;
+  font-weight: $font-weight-bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $color-surface;
+    color: $color-on-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.pagination__page.is-active {
+  background-color: $color-on-primary;
+  border-color: $color-on-primary;
+  color: $color-white;
+}

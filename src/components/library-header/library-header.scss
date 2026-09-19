@@ -1,0 +1,23 @@
+@use '../../styles/abstracts' as *;
+
+.library-header__inner {
+  @include container;
+  padding-block: $space-7 $space-5;
+
+  h1 {
+    margin: 0 0 $space-2;
+    font-size: $font-display-small;
+    font-weight: $font-weight-extra-bold;
+    color: $color-on-primary;
+
+    @include respond-up('tablet') {
+      font-size: $font-display-medium;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-body-large;
+    color: $color-on-bg-low;
+  }
+}

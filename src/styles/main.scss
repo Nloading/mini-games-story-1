@@ -26,10 +26,10 @@ body,
   gap: $space-1;
   padding: $btn-padding-medium;
   border-radius: $radius-small;
+  border: 2px solid $color-on-primary;
   font-weight: $font-weight-bold;
   font-size: $font-body-medium;
   text-decoration: none;
-  border: none;
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
     transform 0.2s ease;
@@ -42,7 +42,6 @@ body,
 .btn--primary {
   background-color: $color-primary;
   color: $color-on-primary;
-  box-shadow: $shadow-level-1;
 
   &:hover {
     background-color: $color-primary-high;
