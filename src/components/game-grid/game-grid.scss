@@ -1,0 +1,124 @@
+@use '../../styles/abstracts' as *;
+
+.game-grid__inner {
+  @include container;
+  padding-bottom: $space-6;
+}
+
+.game-grid__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-4;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @include respond-up('desktop') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.library-card {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-bg-card;
+  border: 2px solid $color-on-primary;
+  border-radius: $radius-lg;
+  box-shadow: 4px 4px 0 $color-on-primary;
+  overflow: hidden;
+
+  @include respond-up('tablet') {
+    flex-direction: row;
+  }
+}
+
+.library-card__cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+
+  @include respond-up('tablet') {
+    width: 220px;
+    aspect-ratio: unset;
+    flex-shrink: 0;
+  }
+}
+
+.library-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  padding: $space-4;
+  min-width: 0;
+}
+
+.library-card__top {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-wrap: nowrap;
+  width: 100%;
+
+  h3 {
+    margin: 0;
+    font-size: $font-body-large;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    line-height: 1.2;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.category-chip {
+  padding: $size-05 $space-2;
+  border-radius: $radius-full;
+  background-color: $color-secondary;
+  color: $color-tertiary;
+  font-size: $font-label-medium;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+}
+
+.price {
+  margin-left: auto;
+  font-size: $font-body-medium;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &--free {
+    color: $color-price-free;
+  }
+}
+
+.library-card__desc {
+  margin: 0;
+  font-size: $font-body-small;
+  color: $color-on-bg-low;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.library-card__meta {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  margin-top: auto;
+}
+
+.library-card__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: $size-05;
+  font-size: $font-body-small;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg;
+}
+
+.library-card__details {
+  margin-left: auto;
+}

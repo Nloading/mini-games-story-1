@@ -1,0 +1,136 @@
+@use '../../styles/abstracts' as *;
+
+.mobile-nav {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-white;
+
+  &::backdrop {
+    background: rgba(30, 27, 58, 0.45);
+  }
+}
+
+.mobile-nav__panel {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  width: 100%;
+  min-height: 100%;
+  padding: $space-5;
+  background-color: $color-bg-footer;
+  box-shadow: $shadow-level-3;
+}
+
+.mobile-nav__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 32px;
+}
+
+.mobile-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  height: 32px;
+  color: $color-white;
+  font-size: $font-headline-small;
+  font-weight: $font-weight-bold;
+  line-height: 24px;
+  text-decoration: none;
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+}
+
+.mobile-nav__close {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: $size-4;
+  height: $size-4;
+  padding: 4px 6px;
+  border: 0;
+  background-color: $color-bg-footer-low;
+  color: $color-white;
+  font-size: $font-headline-small;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background-color: $color-bg-footer-lowest;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.mobile-nav__links {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  a {
+    padding: $space-2 0;
+    color: $color-on-bg-footer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-white;
+    }
+
+    &.is-active,
+    &[aria-current='page'] {
+      color: $color-primary;
+    }
+  }
+}
+
+.mobile-nav__actions {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  .btn {
+    box-sizing: border-box;
+    width: 100%;
+    height: 37px;
+    min-height: 37px;
+    max-height: 37px;
+    padding-block: 0;
+  }
+}
+
+.btn--outline-white {
+  border-color: $color-white;
+  color: $color-white;
+  background-color: transparent;
+
+  &:hover {
+    border-color: $color-primary;
+    background-color: $color-bg-footer-low;
+    color: $color-white;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}

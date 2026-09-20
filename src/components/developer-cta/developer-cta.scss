@@ -1,0 +1,72 @@
+@use '../../styles/abstracts' as *;
+
+.developer-cta__inner {
+  @include container;
+  display: grid;
+  gap: $space-5;
+  padding-bottom: $space-9;
+  grid-template-columns: 1fr;
+
+  @include respond-up('tablet') {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.developer-cta__illustration {
+  width: 100%;
+  border-radius: $radius-lg;
+  background-color: $color-secondary;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.developer-cta__card {
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  border: 2px solid $color-on-primary;
+  box-shadow: 4px 4px 0 $color-on-primary;
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  h2 {
+    margin: 0;
+    font-size: $font-headline-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+  }
+
+  p {
+    margin: 0;
+    color: $color-on-bg-low;
+    font-size: $font-body-medium;
+  }
+
+  .btn {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2;
+    line-height: 1;
+  }
+
+  .btn img {
+    width: $size-3;
+    height: $size-3;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+}
+
+.developer-cta__contact {
+  font-size: $font-body-small;
+
+  a {
+    color: $color-on-bg-low;
+    text-decoration: underline;
+  }
+}
