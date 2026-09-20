@@ -13,7 +13,7 @@ export function createHeader(): HTMLElement {
         MiniGames
       </a>
 
-      <nav class="site-header__nav" aria-label="Main navigation">
+      <nav id="main-navigation" class="site-header__nav" aria-label="Main navigation">
         <a href="/" aria-current="page">Home</a>
         <a href="/library">Library</a>
         <a href="/tournaments">Tournaments</a>
@@ -23,6 +23,11 @@ export function createHeader(): HTMLElement {
       <div class="site-header__actions">
         <button type="button" class="btn btn--outline btn--sm">Log In</button>
         <button type="button" class="btn btn--primary btn--sm">Sign Up</button>
+        <button type="button" class="site-header__menu" aria-label="Open menu" aria-expanded="false" aria-controls="main-navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </div>
   `;

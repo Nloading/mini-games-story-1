@@ -52,11 +52,113 @@
   }
 }
 
+.site-header__menu {
+  display: none;
+}
+
 .site-header__actions {
   display: flex;
   align-items: flex-start;
   gap: 16px;
   padding: 0;
+}
+
+@media (max-width: 1023px) {
+  .site-header__nav {
+    display: none;
+  }
+
+  .site-header__actions {
+    align-items: center;
+  }
+
+  .site-header__actions .btn--outline {
+    display: none;
+  }
+
+  .site-header__actions .btn--primary {
+    display: inline-flex;
+  }
+
+  .site-header__actions .btn--outline,
+  .site-header__actions .btn--primary {
+    box-sizing: border-box;
+    width: 93px;
+    min-width: 93px;
+    max-width: 93px;
+    height: 37px;
+    min-height: 37px;
+    max-height: 37px;
+    padding-block: 0;
+  }
+
+  .site-header__actions .btn--primary {
+    width: 85px;
+    min-width: 85px;
+    max-width: 85px;
+    height: 33px;
+    min-height: 33px;
+    max-height: 33px;
+    padding: 8px 16px;
+    white-space: nowrap;
+  }
+
+  .site-header__menu {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    background: #fff;
+    border: 2px solid #242145;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: $color-primary;
+    }
+
+    span {
+      width: 14px;
+      height: 0;
+      border-top: 2px solid #242145;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+  }
+
+  .site-header__nav.is-open {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: $space-2 $space-4;
+    background: $color-bg;
+    border-bottom: 1px solid $color-outline;
+
+    a {
+      padding: $space-2 0;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .site-header__actions .btn--primary {
+    display: none;
+  }
 }
 
 .btn--outline {

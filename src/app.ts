@@ -3,6 +3,7 @@ import { createHeader } from '@/components/header/header';
 import { createFooter } from '@/components/footer/footer';
 import { createAuthDialog } from '@/components/auth-dialog/auth-dialog';
 import { createGameDetailsDialog } from '@/components/game-details-dialog/game-details-dialog';
+import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
 
 export function createApp(): HTMLElement {
   const root = document.createElement('div');
@@ -18,7 +19,21 @@ export function createApp(): HTMLElement {
 
   const authDialog = createAuthDialog();
   const gameDialog = createGameDetailsDialog();
-  document.body.append(authDialog, gameDialog);
+  const mobileNav = createMobileNav();
+  document.body.append(authDialog, gameDialog, mobileNav);
+
+  const burgerButton = root.querySelector<HTMLButtonElement>('.site-header__menu');
+  if (burgerButton && burgerButton.dataset.mobileNavBound !== 'true') {
+    burgerButton.dataset.mobileNavBound = 'true';
+    burgerButton.addEventListener('click', () => {
+      burgerButton.setAttribute('aria-expanded', 'true');
+      mobileNav.showModal();
+    });
+  }
+
+  mobileNav.addEventListener('close', () => {
+    burgerButton?.setAttribute('aria-expanded', 'false');
+  });
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
