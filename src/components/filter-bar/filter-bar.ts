@@ -50,7 +50,11 @@ export function createFilterBar(): HTMLElement {
     chip.addEventListener('click', () => {
       chips.forEach((c) => c.classList.remove('is-selected'));
       chip.classList.add('is-selected');
-      // TODO: hook into game-grid filtering once data fetching is wired up
+      const category =
+        chip.dataset.category?.toLowerCase() === 'all games'
+          ? 'all'
+          : chip.dataset.category?.toLowerCase();
+      document.dispatchEvent(new CustomEvent('library:filter', { detail: category ?? 'all' }));
     });
   });
 

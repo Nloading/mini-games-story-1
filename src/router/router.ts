@@ -12,12 +12,20 @@ const routes: Record<string, RouteHandler> = {
   },
 };
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+function getRoutePath(): string {
+  const pathname = window.location.pathname;
+  const routePath = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname;
+  return routePath || '/';
+}
+
 export const router = {
   init(container: HTMLElement) {
     const fallbackHandler = routes['/'];
 
     const render = () => {
-      const path = window.location.pathname || '/';
+      const path = getRoutePath();
       const handler = routes[path] ?? fallbackHandler;
 
       if (!handler) {
@@ -42,7 +50,8 @@ export const router = {
     render();
   },
   navigate(path: string) {
-    history.pushState({}, '', path);
+    const normalizedPath = path === '/' ? '' : path;
+    history.pushState({}, '', `${basePath}${normalizedPath}` || '/');
     window.dispatchEvent(new PopStateEvent('popstate'));
   },
 };

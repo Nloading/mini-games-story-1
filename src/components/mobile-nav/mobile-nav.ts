@@ -23,13 +23,22 @@ export function createMobileNav(): HTMLDialogElement {
         <a href="/community">Community</a>
       </nav>
       <div class="mobile-nav__actions">
-        <a href="/login" class="btn btn--outline-white">Log In</a>
-        <a href="/register" class="btn btn--primary">Sign Up</a>
+        <button type="button" class="btn btn--outline-white" data-auth-tab="login">Log In</button>
+        <button type="button" class="btn btn--primary" data-auth-tab="register">Sign Up</button>
       </div>
     </div>
   `;
 
   dialog.querySelector('.mobile-nav__close')?.addEventListener('click', () => dialog.close());
+
+  dialog.querySelectorAll<HTMLButtonElement>('[data-auth-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.dispatchEvent(
+        new CustomEvent('mobile-nav:auth', { detail: button.dataset.authTab })
+      );
+      dialog.close();
+    });
+  });
 
   dialog.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach((link) => {
     link.addEventListener('click', (event) => {

@@ -35,6 +35,12 @@ export function createApp(): HTMLElement {
     burgerButton?.setAttribute('aria-expanded', 'false');
   });
 
+  document.addEventListener('mobile-nav:auth', (event) => {
+    const tabName = (event as CustomEvent<string>).detail;
+    authDialog.dispatchEvent(new CustomEvent('auth:switch', { detail: tabName }));
+    authDialog.showModal();
+  });
+
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
     if (target.closest('.site-header__actions .btn--outline')) authDialog.showModal();

@@ -127,6 +127,11 @@ export function createAuthDialog(): HTMLDialogElement {
 
   activate('login');
 
+  dialog.addEventListener('auth:switch', (event) => {
+    const tabName = (event as CustomEvent<string>).detail;
+    if (tabName === 'login' || tabName === 'register') activate(tabName);
+  });
+
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => activate(tab.dataset.tab!));
   });
@@ -140,6 +145,10 @@ export function createAuthDialog(): HTMLDialogElement {
       const input = btn.previousElementSibling as HTMLInputElement;
       input.type = input.type === 'password' ? 'text' : 'password';
     });
+  });
+
+  dialog.querySelectorAll<HTMLFormElement>('.auth-form').forEach((form) => {
+    form.addEventListener('submit', (event) => event.preventDefault());
   });
 
   dialog.addEventListener('click', (e) => {
