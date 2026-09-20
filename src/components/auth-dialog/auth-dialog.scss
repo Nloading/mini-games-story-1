@@ -7,9 +7,17 @@
   max-width: 420px;
   width: min(100% - #{$space-4}, 420px);
 
+  &[open] {
+    display: block;
+  }
+
   &::backdrop {
     background-color: rgba($color-on-primary, 0.55);
   }
+}
+
+.auth-form[hidden] {
+  display: none !important;
 }
 
 .auth-dialog__panel {
@@ -21,12 +29,6 @@
   display: flex;
   flex-direction: column;
   gap: $space-4;
-}
-
-.auth-dialog__logo {
-  width: $size-10;
-  height: auto;
-  align-self: center;
 }
 
 .auth-dialog__close {
@@ -105,37 +107,60 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  gap: 16px;
+  background: $color-white;
+  border: 2px solid #242145;
+  border-radius: 8px;
+  box-sizing: border-box;
 
   img:first-child {
-    position: absolute;
-    left: $space-3;
-    opacity: 0.6;
+    position: static;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    opacity: 0.7;
   }
 
   input {
     width: 100%;
-    padding: $space-2 $space-3 $space-2 $space-8;
-    border-radius: $radius-small;
-    border: 1px solid $color-outline-variant;
-    font-size: $font-body-medium;
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    line-height: 17px;
     font-family: $font-family-text;
     color: $color-on-bg;
 
     &:focus-visible {
-      outline: 2px solid $color-primary;
-      outline-offset: 1px;
-      border-color: $color-primary;
+      outline: none;
+      border: none;
     }
   }
 }
 
 .auth-field__toggle {
-  position: absolute;
-  right: $space-3;
+  position: static;
+  width: 20px;
+  height: 20px;
+  padding: 0;
   border: none;
   background: transparent;
   cursor: pointer;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  opacity: 0.7;
+
+  img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    object-fit: contain;
+  }
 }
 
 .auth-form__forgot {
@@ -148,6 +173,25 @@
 
 .auth-form__submit {
   width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  min-height: 52px;
+  border: 2.5px solid #242145;
+  border-radius: 12px;
+  background: #ffd02b;
+  color: #242145;
+  box-shadow: 0 4px 0 #242145;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  font-family: 'Inter', sans-serif;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
 }
 
 .auth-divider {
