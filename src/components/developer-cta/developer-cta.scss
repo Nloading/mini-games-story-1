@@ -24,7 +24,8 @@
 .developer-cta__card {
   background-color: $color-bg-card;
   border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  border: 2px solid $color-on-primary;
+  box-shadow: 4px 4px 0 $color-on-primary;
   padding: $space-6;
   display: flex;
   flex-direction: column;

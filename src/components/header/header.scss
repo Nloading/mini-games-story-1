@@ -69,12 +69,12 @@
   height: 37px;
   padding: 10px 20px;
   background-color: transparent;
-  border: 2px solid #242145;
+  border: 2px solid $color-on-primary;
   border-radius: 8px;
-  color: #242145;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 17px;
+  color: $color-on-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-body-small;
+  line-height: 1.2;
 
   &:hover {
     border-color: $color-primary;
@@ -96,13 +96,13 @@
   min-width: 93px;
   height: 37px;
   padding: 10px 20px;
-  background: #ffd02b;
-  border: 2px solid #242145;
+  background: $color-primary;
+  border: 2px solid $color-on-primary;
   border-radius: 8px;
-  color: #242145;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 17px;
+  color: $color-on-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-body-small;
+  line-height: 1.2;
 }
 
 .btn--sm {

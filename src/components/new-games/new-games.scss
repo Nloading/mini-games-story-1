@@ -48,11 +48,12 @@
 
 .icon-btn--outline {
   background-color: $color-white;
-  border: 1px solid $color-outline-variant;
+  border: 2px solid $color-on-primary;
 }
 
 .icon-btn--primary {
   background-color: $color-primary;
+  border: 2px solid $color-on-primary;
 }
 
 .game-list {

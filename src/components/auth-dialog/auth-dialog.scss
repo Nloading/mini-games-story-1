@@ -1,0 +1,202 @@
+@use '../../styles/abstracts' as *;
+
+.auth-dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: 420px;
+  width: min(100% - #{$space-4}, 420px);
+
+  &::backdrop {
+    background-color: rgba($color-on-primary, 0.55);
+  }
+}
+
+.auth-dialog__panel {
+  position: relative;
+  background-color: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-level-3;
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.auth-dialog__logo {
+  width: $size-10;
+  height: auto;
+  align-self: center;
+}
+
+.auth-dialog__close {
+  position: absolute;
+  top: $space-3;
+  right: $space-3;
+  width: $size-4;
+  height: $size-4;
+  border-radius: $radius-full;
+  border: 1px solid $color-outline;
+  background-color: $color-white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $color-on-primary;
+  }
+}
+
+.auth-tabs {
+  display: flex;
+  padding: $size-05;
+  border-radius: $radius-medium;
+  background-color: $color-secondary;
+}
+
+.auth-tabs__btn {
+  flex: 1;
+  padding: $space-2 $space-3;
+  border: none;
+  border-radius: $radius-small;
+  background-color: transparent;
+  color: $color-on-bg;
+  font-size: $font-body-medium;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &.is-active {
+    background-color: $color-on-primary;
+    color: $color-white;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  h2 {
+    margin: 0;
+    font-size: $font-headline-small;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+  }
+}
+
+.auth-form__lead {
+  margin: 0;
+  font-size: $font-body-small;
+  color: $color-on-bg-low;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: $size-05;
+  font-size: $font-label-large;
+  font-weight: $font-weight-bold;
+  color: $color-on-bg;
+}
+
+.auth-field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  img:first-child {
+    position: absolute;
+    left: $space-3;
+    opacity: 0.6;
+  }
+
+  input {
+    width: 100%;
+    padding: $space-2 $space-3 $space-2 $space-8;
+    border-radius: $radius-small;
+    border: 1px solid $color-outline-variant;
+    font-size: $font-body-medium;
+    font-family: $font-family-text;
+    color: $color-on-bg;
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 1px;
+      border-color: $color-primary;
+    }
+  }
+}
+
+.auth-field__toggle {
+  position: absolute;
+  right: $space-3;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.auth-form__forgot {
+  align-self: flex-end;
+  font-size: $font-label-large;
+  font-weight: $font-weight-medium;
+  color: $color-on-bg;
+  text-decoration: underline;
+}
+
+.auth-form__submit {
+  width: 100%;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  color: $color-on-bg-low;
+  font-size: $font-label-medium;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: $color-outline;
+  }
+}
+
+.btn--google {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $btn-padding-small;
+  border-radius: $radius-small;
+  border: 1px solid $color-outline-variant;
+  background-color: $color-white;
+  color: $color-on-bg;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $color-on-primary;
+  }
+}
+
+.auth-form__switch {
+  margin: 0;
+  text-align: center;
+  font-size: $font-label-large;
+  color: $color-on-bg-low;
+
+  button {
+    border: none;
+    background: transparent;
+    color: $color-on-primary;
+    font-weight: $font-weight-bold;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
