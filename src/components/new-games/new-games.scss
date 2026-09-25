@@ -60,10 +60,12 @@
   display: flex;
   gap: $space-3;
   overflow-x: auto;
+  padding-inline: max(0px, calc((100% - 480px) / 2));
   scroll-behavior: smooth;
+  scroll-snap-type: none;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding-block: 0;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
@@ -77,12 +79,17 @@
   aspect-ratio: 3 / 4;
   border-radius: $radius-lg;
   overflow: hidden;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
+  transition: flex-basis 0.35s ease, aspect-ratio 0.35s ease;
 
   &--featured {
-    flex: 0 0 480px;
+    flex: 0 0 min(480px, 100%);
     aspect-ratio: 16 / 9;
   }
+}
+
+.game-list--teleporting .game-card {
+  transition: none;
 }
 
 .game-card__cover {
