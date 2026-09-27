@@ -34,6 +34,22 @@ export function createHeader(): HTMLElement {
 
   const nav = header.querySelector<HTMLDivElement>('.site-header__nav');
   const menuButton = header.querySelector<HTMLButtonElement>('.site-header__menu');
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+  function getCurrentRoutePath(): string {
+    const pathname = window.location.pathname;
+    const routePath = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname;
+    return routePath || '/';
+  }
+
+  function setActiveNavLink(path: string): void {
+    header.querySelectorAll<HTMLAnchorElement>('.site-header__nav a').forEach((item) => {
+      const href = item.getAttribute('href') ?? '/';
+      const isActive = href === '/' ? path === '/' : path === href;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-current', isActive ? 'page' : 'false');
+    });
+  }
 
   header.querySelectorAll('a[href^="/"]').forEach((link) => {
     link.addEventListener('click', (event) => {
@@ -45,15 +61,17 @@ export function createHeader(): HTMLElement {
       }
 
       event.preventDefault();
-      nav
-        ?.querySelectorAll('a')
-        .forEach((item) => item.classList.toggle('is-active', item === target));
-      header.querySelectorAll('.site-header__nav a').forEach((item) => {
-        item.setAttribute('aria-current', item === target ? 'page' : 'false');
-      });
+      setActiveNavLink(href);
       router.navigate(href);
     });
   });
+
+  document.addEventListener('route:change', (event) => {
+    const path = (event as CustomEvent<string>).detail ?? getCurrentRoutePath();
+    setActiveNavLink(path);
+  });
+
+  setActiveNavLink(getCurrentRoutePath());
 
   menuButton?.addEventListener('click', () => {
     const isOpen = menuButton.classList.toggle('is-open');

@@ -7,9 +7,28 @@
   max-width: 600px;
   width: min(100% - #{$space-4}, 600px);
   max-height: min(90vh, 900px);
+  opacity: 0;
+  transform: translateY($space-2) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  &[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  &.is-closing {
+    opacity: 0;
+    transform: translateY($space-2) scale(0.98);
+  }
 
   &::backdrop {
     background-color: rgba($color-on-primary, 0.55);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
   }
 }
 
