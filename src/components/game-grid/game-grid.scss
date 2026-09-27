@@ -98,6 +98,7 @@
   font-size: $font-body-small;
   color: $color-on-bg-low;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
