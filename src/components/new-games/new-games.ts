@@ -19,10 +19,10 @@ interface Game {
 
 const games: Game[] = [
   { title: 'Tailside Cafe', rating: 4.8, likes: '12.3K', image: tailsideImage },
-  { title: 'Vacation Cafe Simulator', rating: 4.8, image: vacationImage },
+  { title: 'Vacation Cafe Simulator', rating: 4.8, likes: '28.7K', image: vacationImage },
   { title: 'ISLANDERS: New Shores', rating: 4.9, likes: '54.2K', image: islandersImage },
   { title: 'Winter Burrow', rating: 4.9, likes: '32.4K', image: winterImage },
-  { title: 'Shelve Potions', rating: 4.8, badge: '1.0', image: shelveImage },
+  { title: 'Shelve Potions', rating: 4.8, likes: '21.3K', badge: '1.0', image: shelveImage },
 ];
 
 function renderCard(game: Game): string {
