@@ -122,3 +122,60 @@
 .library-card__details {
   margin-left: auto;
 }
+
+@include respond-up('tablet') {
+  .library-card__details {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 376px) {
+  .library-card__body {
+    display: grid;
+    grid-template-columns: max-content max-content minmax(0, 1fr);
+    grid-template-areas:
+      'title title title'
+      'type type type'
+      'description description description'
+      'rating likes price'
+      'details details details';
+  }
+
+  .library-card__top,
+  .library-card__meta {
+    display: contents;
+  }
+
+  .library-card__top h3 {
+    grid-area: title;
+  }
+
+  .category-chip {
+    grid-area: type;
+    justify-self: start;
+  }
+
+  .library-card__desc {
+    grid-area: description;
+  }
+
+  .library-card__meta .library-card__stat:first-child {
+    grid-area: rating;
+  }
+
+  .library-card__meta .library-card__stat:nth-child(2) {
+    grid-area: likes;
+  }
+
+  .price {
+    grid-area: price;
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .library-card__details {
+    grid-area: details;
+    width: 100%;
+    margin-left: 0;
+  }
+}

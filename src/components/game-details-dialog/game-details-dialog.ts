@@ -1,6 +1,6 @@
 import './game-details-dialog.scss';
 import starIcon from '../../assets/images/star.png';
-import heartIcon from '../../assets/images/heart.png';
+import heartIcon from '../../assets/images/heartnotactive.png';
 import tukoniImage from '../../assets/images/tukoni.jpg';
 import closeIcon from '../../assets/images/closeIcon.png';
 import sendTrigger from '../../assets/images/sendTrigger.png';
