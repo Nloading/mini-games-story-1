@@ -32,6 +32,9 @@ export function createHeader(): HTMLElement {
     </div>
   `;
 
+  const nav = header.querySelector<HTMLDivElement>('.site-header__nav');
+  const menuButton = header.querySelector<HTMLButtonElement>('.site-header__menu');
+
   header.querySelectorAll('a[href^="/"]').forEach((link) => {
     link.addEventListener('click', (event) => {
       const target = event.currentTarget as HTMLAnchorElement;
@@ -42,8 +45,20 @@ export function createHeader(): HTMLElement {
       }
 
       event.preventDefault();
+      nav
+        ?.querySelectorAll('a')
+        .forEach((item) => item.classList.toggle('is-active', item === target));
+      header.querySelectorAll('.site-header__nav a').forEach((item) => {
+        item.setAttribute('aria-current', item === target ? 'page' : 'false');
+      });
       router.navigate(href);
     });
+  });
+
+  menuButton?.addEventListener('click', () => {
+    const isOpen = menuButton.classList.toggle('is-open');
+    menuButton.setAttribute('aria-expanded', String(isOpen));
+    nav?.classList.toggle('is-open', isOpen);
   });
 
   return header;

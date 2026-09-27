@@ -98,7 +98,7 @@ function renderComment(comment: Comment, index: number): string {
           <span class="comment__time">${comment.time}</span>
         </div>
         <p class="comment__text">${comment.text}</p>
-        <button type="button" class="comment__like">
+        <button type="button" class="comment__like" aria-label="Like comment by ${comment.name}">
           <img src="${heartIcon}" alt="" width="14" height="14" />
           ${comment.likes}
         </button>
@@ -179,10 +179,45 @@ export function createGameDetailsDialog(game: GameDetails = sampleGame): HTMLDia
   });
 
   const composer = dialog.querySelector<HTMLFormElement>('.comment-composer')!;
+  const input = composer.querySelector<HTMLInputElement>('input')!;
+  const sendButton = composer.querySelector<HTMLButtonElement>('.comment-send-btn')!;
+
+  const updateComposerState = (): void => {
+    const isEmpty = input.value.trim().length === 0;
+    sendButton.disabled = isEmpty;
+  };
+
+  input.addEventListener('input', updateComposerState);
+  updateComposerState();
+
   composer.addEventListener('submit', (e) => {
     e.preventDefault();
-    // TODO: wire up to real comment submission once an API/store exists
-    composer.reset();
+    if (input.value.trim().length === 0) {
+      return;
+    }
+    input.value = '';
+    updateComposerState();
+  });
+
+  dialog.querySelectorAll<HTMLButtonElement>('.comment__like').forEach((likeButton) => {
+    likeButton.addEventListener('click', () => {
+      const current = likeButton.classList.toggle('is-liked');
+      const fakeCount = Number(likeButton.textContent?.trim() ?? '0');
+      const nextValue = current ? fakeCount + 1 : fakeCount - 1;
+      likeButton.innerHTML = `<img src="${heartIcon}" alt="" width="14" height="14" /> ${nextValue}`;
+      likeButton.setAttribute('aria-pressed', String(current));
+    });
+  });
+
+  const favoriteButton = dialog.querySelector<HTMLButtonElement>('.btn--outline-lg');
+  favoriteButton?.addEventListener('click', () => {
+    const active = favoriteButton.classList.toggle('is-favorite');
+    const buttonImage = favoriteButton.querySelector('img');
+    if (buttonImage) {
+      buttonImage.src = active
+        ? '../../assets/images/heart.png'
+        : '../../assets/images/heartnotactive.png';
+    }
   });
 
   return dialog;

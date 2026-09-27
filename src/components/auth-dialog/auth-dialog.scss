@@ -45,8 +45,13 @@
   justify-content: center;
   cursor: pointer;
 
-  &:hover {
-    border-color: $color-on-primary;
+  &:hover,
+  &:focus-visible {
+    @include icon-btn-hover;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
@@ -68,6 +73,11 @@
   font-weight: $font-weight-bold;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    @include chip-hover;
+  }
 
   &.is-active {
     background-color: $color-on-primary;
@@ -112,9 +122,19 @@
   padding: 0 16px;
   gap: 16px;
   background: $color-white;
-  border: 2px solid #242145;
-  border-radius: 8px;
+  border: 2px solid $color-on-primary;
+  border-radius: $radius-small;
   box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: $color-primary;
+    box-shadow: $shadow-level-1;
+  }
+
+  &:has(input:invalid) {
+    border-color: $color-error;
+  }
 
   img:first-child {
     position: static;
@@ -169,6 +189,11 @@
   font-weight: $font-weight-medium;
   color: $color-on-bg;
   text-decoration: underline;
+
+  &:hover,
+  &:focus-visible {
+    @include text-link-hover;
+  }
 }
 
 .auth-form__submit {
@@ -242,5 +267,10 @@
     font-weight: $font-weight-bold;
     text-decoration: underline;
     cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      @include text-link-hover;
+    }
   }
 }

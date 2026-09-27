@@ -58,8 +58,14 @@
     object-fit: contain;
   }
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
+    @include icon-btn-hover;
     background-color: $color-white;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
@@ -151,6 +157,15 @@
     border: 2px solid $color-on-primary;
     background: $color-primary;
     color: $color-on-primary;
+
+    &:hover,
+    &:focus-visible {
+      @include btn-primary-hover;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
   }
 
   .btn--outline-lg {
@@ -158,7 +173,7 @@
     min-width: 0;
     padding: 16px 24px;
     gap: 8px;
-    border: 1px solid #d2d2d2;
+    border: 1px solid $color-outline-variant;
     background-color: $color-white;
     color: $color-on-primary;
     box-shadow: 4px 4px 0 $color-on-primary;
@@ -169,8 +184,13 @@
       flex: 0 0 auto;
     }
 
-    &:hover {
-      border-color: $color-on-primary;
+    &:hover,
+    &:focus-visible {
+      @include btn-outline-hover;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
     }
   }
 }
@@ -290,6 +310,7 @@
     border: 1px solid $color-outline-variant;
     font-size: $font-body-small;
     font-family: $font-family-text;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-visible {
       outline: 2px solid $color-primary;
@@ -312,6 +333,7 @@
     justify-content: center;
     cursor: pointer;
     overflow: hidden;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
 
     img {
       width: 100%;
@@ -320,8 +342,16 @@
       object-fit: cover;
     }
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
+      @include btn-primary-hover;
       background-color: $color-tertiary;
+      color: $color-white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }
@@ -383,6 +413,16 @@
   font-weight: $font-weight-bold;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s ease, opacity 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.9;
+  }
+
+  &.is-liked {
+    color: $color-like;
+  }
 }
 
 .avatar {
