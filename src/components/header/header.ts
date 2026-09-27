@@ -32,6 +32,25 @@ export function createHeader(): HTMLElement {
     </div>
   `;
 
+  const nav = header.querySelector<HTMLDivElement>('.site-header__nav');
+  const menuButton = header.querySelector<HTMLButtonElement>('.site-header__menu');
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+  function getCurrentRoutePath(): string {
+    const pathname = window.location.pathname;
+    const routePath = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname;
+    return routePath || '/';
+  }
+
+  function setActiveNavLink(path: string): void {
+    header.querySelectorAll<HTMLAnchorElement>('.site-header__nav a').forEach((item) => {
+      const href = item.getAttribute('href') ?? '/';
+      const isActive = href === '/' ? path === '/' : path === href;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-current', isActive ? 'page' : 'false');
+    });
+  }
+
   header.querySelectorAll('a[href^="/"]').forEach((link) => {
     link.addEventListener('click', (event) => {
       const target = event.currentTarget as HTMLAnchorElement;
@@ -42,8 +61,22 @@ export function createHeader(): HTMLElement {
       }
 
       event.preventDefault();
+      setActiveNavLink(href);
       router.navigate(href);
     });
+  });
+
+  document.addEventListener('route:change', (event) => {
+    const path = (event as CustomEvent<string>).detail ?? getCurrentRoutePath();
+    setActiveNavLink(path);
+  });
+
+  setActiveNavLink(getCurrentRoutePath());
+
+  menuButton?.addEventListener('click', () => {
+    const isOpen = menuButton.classList.toggle('is-open');
+    menuButton.setAttribute('aria-expanded', String(isOpen));
+    nav?.classList.toggle('is-open', isOpen);
   });
 
   return header;
