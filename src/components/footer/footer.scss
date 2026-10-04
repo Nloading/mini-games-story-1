@@ -67,7 +67,7 @@
 
   &:hover,
   &:focus-visible {
-    @include text-link-hover;
+    color: $color-primary;
   }
 }
 
@@ -89,13 +89,8 @@
 
   &:hover,
   &:focus-visible {
-    @include icon-btn-hover;
     background-color: $color-bg-footer-lowest;
     border-color: $color-primary;
-  }
-
-  &:focus-visible {
-    @include focus-ring;
   }
 }
 

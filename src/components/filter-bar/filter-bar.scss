@@ -27,17 +27,19 @@
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
-  &:hover,
-  &:focus-visible {
-    @include chip-hover;
+  &:hover {
+    border-color: $color-on-primary;
   }
 
   &:focus-visible {
-    @include focus-ring;
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
   }
 
   &.is-selected {
-    @include chip-selected;
+    background-color: $color-primary;
+    border-color: $color-on-primary;
+    color: $color-on-primary;
   }
 }
 
@@ -58,13 +60,13 @@
   font-weight: $font-weight-bold;
   cursor: pointer;
 
-  &:hover,
-  &:focus-visible {
-    @include chip-hover;
+  &:hover {
+    border-color: $color-on-primary;
   }
 
   &:focus-visible {
-    @include focus-ring;
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
   }
 }
 
@@ -161,14 +163,13 @@
   color: $color-on-bg;
   cursor: pointer;
 
-  &:hover,
-  &:focus-visible {
-    @include chip-hover;
+  &:hover {
     background-color: $color-surface-low;
   }
 
   &:focus-visible {
-    @include focus-ring;
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
   }
 
   &.is-selected {

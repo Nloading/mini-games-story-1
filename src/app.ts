@@ -1,32 +1,9 @@
 import { router } from './router/router';
-import type { RouteState } from './router/url-state';
 import { createHeader } from '@/components/header/header';
 import { createFooter } from '@/components/footer/footer';
 import { createAuthDialog } from '@/components/auth-dialog/auth-dialog';
 import { createGameDetailsDialog } from '@/components/game-details-dialog/game-details-dialog';
 import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
-import { createHomePage } from '@/pages/home.page';
-import { createLibraryPage } from '@/pages/library.page';
-import { createNotFoundPage } from '@/pages/not-found.page';
-
-function createPage(state: RouteState): HTMLElement {
-  switch (state.page) {
-    case 'home':
-      return createHomePage();
-    case 'library':
-      return createLibraryPage();
-    case 'not-found':
-      return createNotFoundPage(state.path);
-  }
-}
-
-function needsNewPage(state: RouteState, previous: RouteState | null): boolean {
-  if (previous === null || previous.page !== state.page) {
-    return true;
-  }
-
-  return state.page === 'not-found' && previous.path !== state.path;
-}
 
 export function createApp(): HTMLElement {
   const root = document.createElement('div');
@@ -58,42 +35,20 @@ export function createApp(): HTMLElement {
     burgerButton?.setAttribute('aria-expanded', 'false');
   });
 
-  const syncAuthDialog = (state: RouteState): void => {
-    if (state.authMode !== null) {
-      authDialog.dispatchEvent(new CustomEvent('auth:switch', { detail: state.authMode }));
-      if (!authDialog.open) authDialog.showModal();
-    } else if (authDialog.open) {
-      authDialog.close();
-    }
-  };
-
-  authDialog.addEventListener('close', () => {
-    // The event arrives after the dialog closed; ignore it if History already reopened it.
-    if (!authDialog.open) router.closeDialog('auth');
-  });
-
-  authDialog.addEventListener('auth:tab-change', (event) => {
-    const mode = (event as CustomEvent<string>).detail;
-    if (mode === 'login' || mode === 'register') router.openAuth(mode);
-  });
-
-  router.subscribe((state, previous) => {
-    if (needsNewPage(state, previous)) {
-      view.replaceChildren(createPage(state));
-      if (previous !== null) window.scrollTo(0, 0);
-    }
-
-    syncAuthDialog(state);
+  document.addEventListener('mobile-nav:auth', (event) => {
+    const tabName = (event as CustomEvent<string>).detail;
+    authDialog.dispatchEvent(new CustomEvent('auth:switch', { detail: tabName }));
+    authDialog.showModal();
   });
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
-    if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
-    if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
+    if (target.closest('.site-header__actions .btn--outline')) authDialog.showModal();
+    if (target.closest('.site-header__actions .btn--primary')) authDialog.showModal();
     if (target.closest('.library-card__details')) gameDialog.showModal();
   });
 
-  router.start();
+  router.init(view);
 
   return root;
 }

@@ -6,29 +6,13 @@
   background: transparent;
   max-width: 420px;
   width: min(100% - #{$space-4}, 420px);
-  opacity: 0;
-  transform: translateY($space-2) scale(0.98);
-  transition: opacity 0.2s ease, transform 0.2s ease;
 
   &[open] {
     display: block;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  &.is-closing {
-    opacity: 0;
-    transform: translateY($space-2) scale(0.98);
   }
 
   &::backdrop {
     background-color: rgba($color-on-primary, 0.55);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  &[open]::backdrop {
-    opacity: 1;
   }
 }
 
@@ -41,7 +25,7 @@
   background-color: $color-bg-card;
   border-radius: $radius-lg;
   box-shadow: $shadow-level-3;
-  padding: $space-4;
+  padding: $space-6;
   display: flex;
   flex-direction: column;
   gap: $space-4;
@@ -61,13 +45,8 @@
   justify-content: center;
   cursor: pointer;
 
-  &:hover,
-  &:focus-visible {
-    @include icon-btn-hover;
-  }
-
-  &:focus-visible {
-    @include focus-ring;
+  &:hover {
+    border-color: $color-on-primary;
   }
 }
 
@@ -89,11 +68,6 @@
   font-weight: $font-weight-bold;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    @include chip-hover;
-  }
 
   &.is-active {
     background-color: $color-on-primary;
@@ -138,19 +112,9 @@
   padding: 0 16px;
   gap: 16px;
   background: $color-white;
-  border: 2px solid $color-on-primary;
-  border-radius: $radius-small;
+  border: 2px solid #242145;
+  border-radius: 8px;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus-within {
-    border-color: $color-primary;
-    box-shadow: $shadow-level-1;
-  }
-
-  &:has(input:invalid) {
-    border-color: $color-error;
-  }
 
   img:first-child {
     position: static;
@@ -205,11 +169,6 @@
   font-weight: $font-weight-medium;
   color: $color-on-bg;
   text-decoration: underline;
-
-  &:hover,
-  &:focus-visible {
-    @include text-link-hover;
-  }
 }
 
 .auth-form__submit {
@@ -283,57 +242,5 @@
     font-weight: $font-weight-bold;
     text-decoration: underline;
     cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      @include text-link-hover;
-    }
-  }
-}
-
-.auth-dialog {
-  border: none;
-  padding: 0;
-  background: transparent;
-  max-width: 420px;
-  width: min(100% - #{$space-4}, 420px);
-  opacity: 0;
-  transform: translateY($space-2) scale(0.98);
-  transition: opacity 0.2s ease, transform 0.2s ease, overlay 0.2s ease allow-discrete,
-    display 0.2s ease allow-discrete;
-
-  &[open] {
-    display: block;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-
-    @starting-style {
-      opacity: 0;
-      transform: translateY($space-2) scale(0.98);
-    }
-  }
-
-  &.is-closing {
-    opacity: 0;
-    transform: translateY($space-2) scale(0.98);
-  }
-
-  &::backdrop {
-    background-color: rgba($color-on-primary, 0.55);
-    opacity: 0;
-    transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete,
-      display 0.2s ease allow-discrete;
-  }
-
-  &[open]::backdrop {
-    opacity: 1;
-
-    @starting-style {
-      opacity: 0;
-    }
-  }
-
-  &.is-closing::backdrop {
-    opacity: 0;
   }
 }

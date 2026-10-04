@@ -89,17 +89,15 @@
     padding: $space-2 0;
     color: $color-on-bg-footer;
     text-decoration: none;
-    transition: color 0.2s ease, font-weight 0.2s ease;
+    transition: color 0.2s ease;
 
     &:hover,
     &:focus-visible {
-      @include nav-link-hover;
       color: $color-white;
     }
 
     &.is-active,
     &[aria-current='page'] {
-      @include nav-link-active;
       color: $color-primary;
     }
   }
@@ -125,15 +123,14 @@
   color: $color-white;
   background-color: transparent;
 
-  &:hover,
-  &:focus-visible {
-    @include btn-outline-hover;
-    background-color: $color-bg-footer-low;
+  &:hover {
     border-color: $color-primary;
+    background-color: $color-bg-footer-low;
     color: $color-white;
   }
 
   &:focus-visible {
-    @include focus-ring;
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
   }
 }
