@@ -43,7 +43,7 @@ export function createApp(): HTMLElement {
   const authDialog = createAuthDialog();
   const gameDialog = createGameDetailsDialog();
   const mobileNav = createMobileNav();
-  document.body.append(authDialog, gameDialog, mobileNav);
+  document.body.append(authDialog, gameDialog.element, mobileNav);
 
   const burgerButton = root.querySelector<HTMLButtonElement>('.site-header__menu');
   if (burgerButton && burgerButton.dataset.mobileNavBound !== 'true') {
@@ -72,6 +72,11 @@ export function createApp(): HTMLElement {
     if (!authDialog.open) router.closeDialog('auth');
   });
 
+  gameDialog.element.addEventListener('close', () => {
+    // Same guard as the auth dialog: History may already have reopened it.
+    if (!gameDialog.element.open) router.closeDialog('game');
+  });
+
   authDialog.addEventListener('auth:tab-change', (event) => {
     const mode = (event as CustomEvent<string>).detail;
     if (mode === 'login' || mode === 'register') router.openAuth(mode);
@@ -84,13 +89,21 @@ export function createApp(): HTMLElement {
     }
 
     syncAuthDialog(state);
+
+    if (state.gameSlug !== null) {
+      gameDialog.show(state.gameSlug);
+    } else {
+      gameDialog.hide();
+    }
   });
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
     if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
     if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
-    if (target.closest('.library-card__details')) gameDialog.showModal();
+
+    const detailsButton = target.closest<HTMLElement>('.library-card__details');
+    if (detailsButton?.dataset.slug) router.openGame(detailsButton.dataset.slug);
   });
 
   router.start();
