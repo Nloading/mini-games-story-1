@@ -54,9 +54,7 @@ export function createFooter(): HTMLElement {
       <div class="site-footer__bottom">
         <p>© 2026 MiniGames. All rights reserved.</p>
         <div class="site-footer__badges">
-          <span class="badge"><a href="https://rs.school/courses/short-track" target="_blank" rel="noopener noreferrer">
-            <img src="${rsLogo}" alt="RS School logo" class="badge__logo" />
-          </a></span>
+          <span class="badge"><img src="${rsLogo}" alt="RS School logo" class="badge__logo" /></span>
           <a href="https://github.com/Nloading" class="badge badge--github badge__username" aria-label="GitHub profile">
             <img src="${githubIcon}" alt="GitHub logo" class="badge__github" />
             @Nloading

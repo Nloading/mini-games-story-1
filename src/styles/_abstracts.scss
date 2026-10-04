@@ -1,5 +1,4 @@
 @forward './tokens';
-@use './tokens' as *;
 @use 'sass:map';
 
 $breakpoints: (
@@ -24,53 +23,4 @@ $breakpoints: (
       @content;
     }
   }
-}
-
-@mixin focus-ring {
-  outline: 2px solid $color-primary;
-  outline-offset: 2px;
-}
-
-@mixin btn-primary-hover {
-  background-color: $color-primary-high;
-  border-color: $color-on-primary;
-  color: $color-on-primary;
-}
-
-@mixin btn-outline-hover {
-  background-color: $color-surface;
-  border-color: $color-on-primary;
-  color: $color-on-primary;
-}
-
-@mixin icon-btn-hover {
-  background-color: $color-surface;
-  border-color: $color-on-primary;
-  color: $color-on-primary;
-}
-
-@mixin chip-hover {
-  background-color: $color-secondary;
-  border-color: $color-on-primary;
-  color: $color-on-primary;
-}
-
-@mixin chip-selected {
-  background-color: $color-primary;
-  border-color: $color-on-primary;
-  color: $color-on-primary;
-}
-
-@mixin nav-link-hover {
-  color: $color-on-primary;
-}
-
-@mixin nav-link-active {
-  color: $color-on-primary;
-  font-weight: $font-weight-bold;
-}
-
-@mixin text-link-hover {
-  color: $color-primary;
-  text-decoration: underline;
 }

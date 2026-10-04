@@ -2,23 +2,22 @@ import './header.scss';
 import logoIcon from '../../assets/images/logo.png';
 
 import { router } from '../../router/router';
-import type { PageName } from '../../router/url-state';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
   header.className = 'site-header';
   header.innerHTML = `
     <div class="site-header__inner">
-      <a href="${router.href('/')}" class="site-header__logo">
+      <a href="/" class="site-header__logo">
         <img class="site-header__logo-icon" src="${logoIcon}" alt="MiniGames logo" width="24" height="24" />
         MiniGames
       </a>
 
       <nav id="main-navigation" class="site-header__nav" aria-label="Main navigation">
-        <a href="${router.href('/')}" data-page="home">Home</a>
-        <a href="${router.href('/library')}" data-page="library">Library</a>
-        <a href="${router.href('/tournaments')}">Tournaments</a>
-        <a href="${router.href('/community')}">Community</a>
+        <a href="/" aria-current="page">Home</a>
+        <a href="/library">Library</a>
+        <a href="/tournaments">Tournaments</a>
+        <a href="/community">Community</a>
       </nav>
 
       <div class="site-header__actions">
@@ -33,23 +32,18 @@ export function createHeader(): HTMLElement {
     </div>
   `;
 
-  const nav = header.querySelector<HTMLDivElement>('.site-header__nav');
-  const menuButton = header.querySelector<HTMLButtonElement>('.site-header__menu');
+  header.querySelectorAll('a[href^="/"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const target = event.currentTarget as HTMLAnchorElement;
+      const href = target.getAttribute('href');
 
-  function setActiveNavLink(page: PageName): void {
-    header.querySelectorAll<HTMLAnchorElement>('.site-header__nav a').forEach((item) => {
-      const isActive = item.dataset.page === page;
-      item.classList.toggle('is-active', isActive);
-      item.setAttribute('aria-current', isActive ? 'page' : 'false');
+      if (!href || href.startsWith('#')) {
+        return;
+      }
+
+      event.preventDefault();
+      router.navigate(href);
     });
-  }
-
-  router.subscribe((state) => setActiveNavLink(state.page));
-
-  menuButton?.addEventListener('click', () => {
-    const isOpen = menuButton.classList.toggle('is-open');
-    menuButton.setAttribute('aria-expanded', String(isOpen));
-    nav?.classList.toggle('is-open', isOpen);
   });
 
   return header;
