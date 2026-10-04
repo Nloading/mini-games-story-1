@@ -14,7 +14,12 @@ export function createLibraryPage(): HTMLElement {
   });
   const pagination = createPagination(() => undefined);
 
-  page.append(createLibraryHeader(), filterBar.element, createGameGrid(), pagination.element);
+  page.append(
+    createLibraryHeader(),
+    filterBar.element,
+    createGameGrid().element,
+    pagination.element
+  );
 
   return page;
 }
