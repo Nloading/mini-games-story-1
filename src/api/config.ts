@@ -5,5 +5,9 @@ export const LIBRARY_PAGE_SIZE = 6;
 export const COMMENTS_LIMIT = 3;
 
 export function resolveAssetUrl(path: string): string {
-  return path.startsWith('http') ? path : `${API_ORIGIN}${path}`;
+  if (/^https?:\/\//.test(path)) {
+    return path;
+  }
+
+  return `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
 }

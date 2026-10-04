@@ -125,6 +125,11 @@ export function createAuthDialog(): HTMLDialogElement {
     });
   }
 
+  function selectTab(tabName: string): void {
+    activate(tabName);
+    dialog.dispatchEvent(new CustomEvent('auth:tab-change', { detail: tabName }));
+  }
+
   activate('login');
 
   dialog.addEventListener('auth:switch', (event) => {
@@ -133,11 +138,11 @@ export function createAuthDialog(): HTMLDialogElement {
   });
 
   tabs.forEach((tab) => {
-    tab.addEventListener('click', () => activate(tab.dataset.tab!));
+    tab.addEventListener('click', () => selectTab(tab.dataset.tab!));
   });
 
   dialog.querySelectorAll<HTMLButtonElement>('[data-switch]').forEach((btn) => {
-    btn.addEventListener('click', () => activate(btn.dataset.switch!));
+    btn.addEventListener('click', () => selectTab(btn.dataset.switch!));
   });
 
   dialog.querySelectorAll<HTMLButtonElement>('.auth-field__toggle').forEach((btn) => {

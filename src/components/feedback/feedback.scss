@@ -10,7 +10,7 @@
     $color-outline 100%
   );
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  animation: skeleton-shimmer $motion-duration-skeleton ease-in-out infinite;
 
   &--title {
     width: 60%;
