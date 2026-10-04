@@ -18,7 +18,7 @@ export interface GamesListMeta {
   totalPages: number;
   appliedFilter: {
     category: string;
-    sort: SortValue;
+    sort: string;
   };
 }
 
