@@ -7,14 +7,34 @@
   max-width: 600px;
   width: min(100% - #{$space-4}, 600px);
   max-height: min(90vh, 900px);
+  opacity: 0;
+  transform: translateY($space-2) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  &[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  &.is-closing {
+    opacity: 0;
+    transform: translateY($space-2) scale(0.98);
+  }
 
   &::backdrop {
     background-color: rgba($color-on-primary, 0.55);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
   }
 }
 
 .game-dialog__panel {
   background-color: $color-bg-card;
+  border: 1px solid $color-outline;
   border-radius: $radius-lg;
   box-shadow: $shadow-level-3;
   overflow-y: auto;
@@ -45,7 +65,7 @@
   border-radius: $radius-full;
   border: 2px solid $color-on-primary;
   background-color: rgba($color-white, 0.9);
-  box-shadow: 4px 4px 0 rgba($color-on-primary, 0.9);
+  box-shadow: 2px 2px 0 $color-on-primary;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -57,8 +77,14 @@
     object-fit: contain;
   }
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
+    @include icon-btn-hover;
     background-color: $color-white;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
@@ -71,8 +97,8 @@
 
 .game-dialog__title-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: $space-2;
 
   h2 {
@@ -100,12 +126,13 @@
 }
 
 .detail-chips {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: $space-2;
 }
 
 .detail-chip {
+  flex: 1 1 120px;
   padding: $space-2 $space-3;
   border-radius: $radius-medium;
   border: 1px solid $color-outline;
@@ -149,6 +176,15 @@
     border: 2px solid $color-on-primary;
     background: $color-primary;
     color: $color-on-primary;
+
+    &:hover,
+    &:focus-visible {
+      @include btn-primary-hover;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
   }
 
   .btn--outline-lg {
@@ -156,7 +192,7 @@
     min-width: 0;
     padding: 16px 24px;
     gap: 8px;
-    border: 1px solid #d2d2d2;
+    border: 1px solid $color-outline-variant;
     background-color: $color-white;
     color: $color-on-primary;
     box-shadow: 4px 4px 0 $color-on-primary;
@@ -167,8 +203,13 @@
       flex: 0 0 auto;
     }
 
-    &:hover {
-      border-color: $color-on-primary;
+    &:hover,
+    &:focus-visible {
+      @include btn-outline-hover;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
     }
   }
 }
@@ -181,6 +222,16 @@
 }
 
 @media (max-width: 767px) {
+  .hero-icon-btn {
+    width: $size-4;
+    height: $size-4;
+  }
+
+  .game-dialog__title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .game-dialog__actions {
     width: 100%;
     max-width: 327px;
@@ -278,6 +329,7 @@
     border: 1px solid $color-outline-variant;
     font-size: $font-body-small;
     font-family: $font-family-text;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-visible {
       outline: 2px solid $color-primary;
@@ -300,6 +352,7 @@
     justify-content: center;
     cursor: pointer;
     overflow: hidden;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
 
     img {
       width: 100%;
@@ -308,8 +361,16 @@
       object-fit: cover;
     }
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
+      @include btn-primary-hover;
       background-color: $color-tertiary;
+      color: $color-white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }
@@ -371,6 +432,16 @@
   font-weight: $font-weight-bold;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s ease, opacity 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.9;
+  }
+
+  &.is-liked {
+    color: $color-like;
+  }
 }
 
 .avatar {
@@ -399,5 +470,53 @@
   }
   &--5 {
     background-color: $color-avatar-random-5;
+  }
+}
+
+.game-dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: 600px;
+  width: min(100% - #{$space-4}, 600px);
+  max-height: min(90vh, 900px);
+  opacity: 0;
+  transform: translateY($space-2) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease, overlay 0.2s ease allow-discrete,
+    display 0.2s ease allow-discrete;
+
+  &[open] {
+    display: block;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY($space-2) scale(0.98);
+    }
+  }
+
+  &.is-closing {
+    opacity: 0;
+    transform: translateY($space-2) scale(0.98);
+  }
+
+  &::backdrop {
+    background-color: rgba($color-on-primary, 0.55);
+    opacity: 0;
+    transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete,
+      display 0.2s ease allow-discrete;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+
+  &.is-closing::backdrop {
+    opacity: 0;
   }
 }

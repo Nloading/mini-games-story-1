@@ -38,6 +38,13 @@ $shadow-level-1: 0 4px 4px rgba(36, 33, 69, 0.12);
 $shadow-level-2: 0 6px 6px rgba(36, 33, 69, 0.12);
 $shadow-level-3: 0 8px 8px rgba(36, 33, 69, 0.12);
 
+// Motion
+$motion-duration-short: 200ms;
+$motion-duration-skeleton: 1.4s;
+
+// Layers
+$z-snackbar: 1000;
+
 // Typography size tokens
 $font-display-large: 56px;
 $font-display-medium: 36px;

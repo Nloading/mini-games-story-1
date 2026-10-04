@@ -19,6 +19,7 @@ const localImages: Record<string, string> = {
 };
 
 type LibraryGame = ApiGame;
+const PAGE_SIZE = 6;
 
 function renderCard(game: LibraryGame): string {
   const image = localImages[game.slug] ?? vacationImage;
@@ -79,27 +80,58 @@ export function createGameGrid(): HTMLElement {
   const list = section.querySelector<HTMLUListElement>('.game-grid__list');
   let games = fallbackGames;
   let category = 'all';
+  let sortOption = 'Rating ↓';
+  let currentPage = 1;
 
-  const renderGames = (sortOption = 'Rating ↓'): void => {
+  const renderGames = (): void => {
     const filteredGames =
       category === 'all' ? games : games.filter((game) => game.category === category);
-    if (list) list.innerHTML = sortGames(filteredGames, sortOption).map(renderCard).join('');
+    const sortedGames = sortGames(filteredGames, sortOption);
+    const totalPages = Math.max(1, Math.ceil(sortedGames.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages);
+    const firstGame = (currentPage - 1) * PAGE_SIZE;
+
+    if (list) {
+      list.innerHTML = sortedGames
+        .slice(firstGame, firstGame + PAGE_SIZE)
+        .map(renderCard)
+        .join('');
+    }
+    document.dispatchEvent(
+      new CustomEvent('library:pagination-update', { detail: { totalPages, currentPage } })
+    );
   };
 
   void getGames().then((loadedGames) => {
     games = loadedGames;
+    currentPage = 1;
     renderGames();
   });
 
   document.addEventListener('library:filter', (event) => {
     category = (event as CustomEvent<string>).detail ?? 'all';
+    currentPage = 1;
     renderGames();
   });
 
   document.addEventListener('library:sort', (event) => {
-    const sortOption = (event as CustomEvent<string>).detail;
-    if (sortOption) renderGames(sortOption);
+    const nextSortOption = (event as CustomEvent<string>).detail;
+    if (nextSortOption) {
+      sortOption = nextSortOption;
+      currentPage = 1;
+      renderGames();
+    }
   });
+
+  document.addEventListener('library:page-change', (event) => {
+    const nextPage = Number((event as CustomEvent<number>).detail);
+    if (Number.isInteger(nextPage) && nextPage > 0) {
+      currentPage = nextPage;
+      renderGames();
+    }
+  });
+
+  renderGames();
 
   return section;
 }

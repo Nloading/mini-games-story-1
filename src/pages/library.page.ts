@@ -7,6 +7,6 @@ export function createLibraryPage(): HTMLElement {
   const page = document.createElement('main');
   page.className = 'library-page';
   page.setAttribute('aria-label', 'Game library page');
-  page.append(createLibraryHeader(), createFilterBar(), createGameGrid(), createPagination(4, 1));
+  page.append(createLibraryHeader(), createFilterBar(), createGameGrid(), createPagination(1, 1));
   return page;
 }

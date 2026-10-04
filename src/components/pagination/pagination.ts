@@ -7,43 +7,57 @@ export function createPagination(totalPages: number, currentPage = 1): HTMLEleme
   nav.className = 'pagination';
   nav.setAttribute('aria-label', 'Pagination');
 
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  let pageCount = Math.max(1, totalPages);
+  let activePage = Math.min(Math.max(1, currentPage), pageCount);
 
-  nav.innerHTML = `
-    <button type="button" class="pagination__arrow" data-dir="-1" aria-label="Previous page" ${
-      currentPage === 1 ? 'disabled' : ''
-    }>
-      <img src="${arrowBack}" alt="" width="14" height="14" />
-    </button>
-    ${pages
-      .map(
-        (page) => `
-      <button type="button" class="pagination__page${
-        page === currentPage ? ' is-active' : ''
-      }" data-page="${page}" aria-current="${page === currentPage ? 'page' : 'false'}">
-        ${page}
+  const render = (): void => {
+    const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+    nav.innerHTML = `
+      <button type="button" class="pagination__arrow" data-dir="-1" aria-label="Previous page" ${
+        activePage === 1 ? 'disabled' : ''
+      }>
+        <img src="${arrowBack}" alt="" width="14" height="14" />
       </button>
-    `
-      )
-      .join('')}
-    <button type="button" class="pagination__arrow" data-dir="1" aria-label="Next page" ${
-      currentPage === totalPages ? 'disabled' : ''
-    }>
-      <img src="${arrowForward}" alt="" width="14" height="14" />
-    </button>
-  `;
+      ${pages
+        .map(
+          (page) => `
+        <button type="button" class="pagination__page${
+          page === activePage ? ' is-active' : ''
+        }" data-page="${page}" aria-current="${page === activePage ? 'page' : 'false'}">
+          ${page}
+        </button>
+      `
+        )
+        .join('')}
+      <button type="button" class="pagination__arrow" data-dir="1" aria-label="Next page" ${
+        activePage === pageCount ? 'disabled' : ''
+      }>
+        <img src="${arrowForward}" alt="" width="14" height="14" />
+      </button>
+    `;
+  };
 
-  nav.querySelectorAll<HTMLButtonElement>('.pagination__page').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      nav.querySelectorAll('.pagination__page').forEach((b) => {
-        b.classList.remove('is-active');
-        b.setAttribute('aria-current', 'false');
-      });
-      btn.classList.add('is-active');
-      btn.setAttribute('aria-current', 'page');
-      // TODO: hook into game-grid pagination once data fetching is wired up
-    });
+  nav.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+      '.pagination__page, .pagination__arrow'
+    );
+    if (!button || button.disabled) return;
+
+    const requestedPage = button.dataset.page
+      ? Number(button.dataset.page)
+      : activePage + Number(button.dataset.dir);
+    activePage = Math.min(Math.max(1, requestedPage), pageCount);
+    render();
+    document.dispatchEvent(new CustomEvent('library:page-change', { detail: activePage }));
   });
 
+  document.addEventListener('library:pagination-update', (event) => {
+    const detail = (event as CustomEvent<{ totalPages: number; currentPage: number }>).detail;
+    pageCount = Math.max(1, detail.totalPages);
+    activePage = Math.min(Math.max(1, detail.currentPage), pageCount);
+    render();
+  });
+
+  render();
   return nav;
 }
