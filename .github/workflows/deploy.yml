@@ -5,6 +5,7 @@ on:
     branches:
       - story-1
       - story-2
+      - story-3
   workflow_dispatch:
 
 permissions:

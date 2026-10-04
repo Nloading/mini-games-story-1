@@ -1,9 +1,32 @@
 import { router } from './router/router';
+import type { RouteState } from './router/url-state';
 import { createHeader } from '@/components/header/header';
 import { createFooter } from '@/components/footer/footer';
 import { createAuthDialog } from '@/components/auth-dialog/auth-dialog';
 import { createGameDetailsDialog } from '@/components/game-details-dialog/game-details-dialog';
 import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
+import { createHomePage } from '@/pages/home.page';
+import { createLibraryPage } from '@/pages/library.page';
+import { createNotFoundPage } from '@/pages/not-found.page';
+
+function createPage(state: RouteState): HTMLElement {
+  switch (state.page) {
+    case 'home':
+      return createHomePage();
+    case 'library':
+      return createLibraryPage();
+    case 'not-found':
+      return createNotFoundPage(state.path);
+  }
+}
+
+function needsNewPage(state: RouteState, previous: RouteState | null): boolean {
+  if (previous === null || previous.page !== state.page) {
+    return true;
+  }
+
+  return state.page === 'not-found' && previous.path !== state.path;
+}
 
 export function createApp(): HTMLElement {
   const root = document.createElement('div');
@@ -20,7 +43,7 @@ export function createApp(): HTMLElement {
   const authDialog = createAuthDialog();
   const gameDialog = createGameDetailsDialog();
   const mobileNav = createMobileNav();
-  document.body.append(authDialog, gameDialog, mobileNav);
+  document.body.append(authDialog, gameDialog.element, mobileNav);
 
   const burgerButton = root.querySelector<HTMLButtonElement>('.site-header__menu');
   if (burgerButton && burgerButton.dataset.mobileNavBound !== 'true') {
@@ -35,20 +58,58 @@ export function createApp(): HTMLElement {
     burgerButton?.setAttribute('aria-expanded', 'false');
   });
 
-  document.addEventListener('mobile-nav:auth', (event) => {
-    const tabName = (event as CustomEvent<string>).detail;
-    authDialog.dispatchEvent(new CustomEvent('auth:switch', { detail: tabName }));
-    authDialog.showModal();
+  const syncAuthDialog = (state: RouteState): void => {
+    if (state.authMode !== null) {
+      authDialog.dispatchEvent(new CustomEvent('auth:switch', { detail: state.authMode }));
+      if (!authDialog.open) authDialog.showModal();
+    } else if (authDialog.open) {
+      authDialog.close();
+    }
+  };
+
+  authDialog.addEventListener('close', () => {
+    // The event arrives after the dialog closed; ignore it if History already reopened it.
+    if (!authDialog.open) router.closeDialog('auth');
+  });
+
+  gameDialog.element.addEventListener('close', () => {
+    // Same guard as the auth dialog: History may already have reopened it.
+    if (!gameDialog.element.open) router.closeDialog('game');
+  });
+
+  authDialog.addEventListener('auth:tab-change', (event) => {
+    const mode = (event as CustomEvent<string>).detail;
+    if (mode === 'login' || mode === 'register') router.openAuth(mode);
+  });
+
+  router.subscribe((state, previous) => {
+    if (needsNewPage(state, previous)) {
+      view.replaceChildren(createPage(state));
+      if (previous !== null) window.scrollTo(0, 0);
+    }
+
+    syncAuthDialog(state);
+
+    if (state.gameSlug !== null) {
+      gameDialog.show(state.gameSlug);
+    } else {
+      gameDialog.hide();
+    }
   });
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
-    if (target.closest('.site-header__actions .btn--outline')) authDialog.showModal();
-    if (target.closest('.site-header__actions .btn--primary')) authDialog.showModal();
-    if (target.closest('.library-card__details')) gameDialog.showModal();
+    if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
+    if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
+
+    const gameDetailsTrigger = target.closest<HTMLElement>(
+      '.library-card__details, .game-card__button'
+    );
+    const slug = gameDetailsTrigger?.dataset.slug ?? gameDetailsTrigger?.dataset.gameSlug;
+    if (slug) router.openGame(slug);
   });
 
-  router.init(view);
+  router.start();
 
   return root;
 }

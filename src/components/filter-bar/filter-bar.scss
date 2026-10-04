@@ -191,3 +191,14 @@
     visibility: visible;
   }
 }
+
+.filter-bar__chips-region {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .filter-bar__chips-region {
+    width: 100%;
+  }
+}

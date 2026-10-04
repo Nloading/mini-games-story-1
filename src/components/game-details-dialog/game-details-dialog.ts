@@ -1,224 +1,257 @@
 import './game-details-dialog.scss';
 import starIcon from '../../assets/images/star.png';
 import heartIcon from '../../assets/images/heartnotactive.png';
-import tukoniImage from '../../assets/images/tukoni.jpg';
+import heartActiveIcon from '../../assets/images/heart.png';
 import closeIcon from '../../assets/images/closeIcon.png';
-import sendTrigger from '../../assets/images/sendTrigger.png';
+import { fetchGameComments, fetchGameDetails } from '@/api/endpoints';
+import { isUnknownResourceError } from '@/api/http';
+import { resolveAssetUrl } from '@/api/config';
+import type { GameComment, GameCommentsResponse, GameDetails, TopRecord } from '@/api/types';
+import { createEmptyState, createSkeleton } from '@/components/feedback/feedback';
+import { loadIntoRegion } from '@/utils/async-region';
+import { formatCount } from '@/utils/format';
+import { formatRelativeTime } from '@/utils/relative-time';
+import { escapeHtml } from '@/utils/html';
 
-interface Record {
-  rank: number;
-  name: string;
-  score: string;
-  time: string;
-  medal: string;
+const MEDALS: readonly string[] = ['🥇', '🥈', '🥉'];
+const AVATAR_VARIANTS = 5;
+const SKELETON_COMMENTS = 3;
+const SKELETON_RECORDS = 3;
+
+export interface GameDetailsDialog {
+  element: HTMLDialogElement;
+  show: (slug: string) => void;
+  hide: () => void;
 }
 
-interface Comment {
-  initial: string;
-  name: string;
-  time: string;
-  text: string;
-  likes: number;
+function createElement(tag: string, className: string, html = ''): HTMLElement {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.innerHTML = html;
+
+  return element;
 }
 
-interface GameDetails {
-  title: string;
-  rating: number;
-  likes: string;
-  description: string;
-  genre: string;
-  players: string;
-  duration: string;
-  price: string;
-  records: Record[];
-  comments: Comment[];
-}
+function renderRecord(record: TopRecord): string {
+  const medal = MEDALS[record.position - 1] ?? String(record.position);
 
-const sampleGame: GameDetails = {
-  title: 'Tukoni: Forest Keepers',
-  rating: 4.9,
-  likes: '31.2K',
-  description:
-    'Tukoni: Forest Keepers — a cozy hand-drawn puzzle-adventure. You are Traveller, a little forest spirit on an important mission. Wander storybook meadows, visit mushroom villages, meet adorable inhabitants, solve gentle hand-crafted puzzles, brew herbal teas and help the Tukoni forest prepare peacefully for the coming winter.',
-  genre: 'Puzzle',
-  players: 'Solo',
-  duration: '40-90 min',
-  price: 'Free',
-  records: [
-    { rank: 1, name: 'ForestSpirit', score: '356,700 pts', time: '2 days ago', medal: '🥇' },
-    { rank: 2, name: 'TeaBrewer', score: '332,400pts', time: '5 days ago', medal: '🥈' },
-    { rank: 3, name: 'HerbalistPath', score: '308,900 pts', time: '1 week ago', medal: '🥉' },
-  ],
-  comments: [
-    {
-      initial: 'F',
-      name: 'ForestDweller',
-      time: '3 hours ago',
-      text: "The hand-drawn art is absolutely magical. Every location feels like a page from a children's storybook. The mushroom village made me cry happy tears!",
-      likes: 12,
-    },
-    {
-      initial: 'H',
-      name: 'HerbalTeaLover',
-      time: '1 day ago',
-      text: 'Perfect cozy evening game — brew a cup of chamomile, wrap in a blanket and help the little Tukoni prepare for winter. The puzzles are gentle but satisfying.',
-      likes: 5,
-    },
-    {
-      initial: 'C',
-      name: 'CottageCoreMia',
-      time: '3 days ago',
-      text: 'I want to live inside this game forever. The NPCs are so charming, the tea recipes are real, and the atmosphere is pure warmth and calm.',
-      likes: 8,
-    },
-  ],
-};
-
-function renderRecord(record: Record): string {
   return `
     <li class="record-row">
       <span class="record-row__rank">
-        <span class="record-row__medal" aria-label="${record.rank} place">${record.medal}</span>
-        ${record.name}
+        <span class="record-row__medal" aria-label="Place ${record.position}">${medal}</span>
+        ${escapeHtml(record.playerName)}
       </span>
-      <span class="record-row__score">${record.score}</span>
-      <span class="record-row__time">${record.time}</span>
+      <span class="record-row__score">${record.score.toLocaleString('en-US')} pts</span>
+      <span class="record-row__time">${escapeHtml(formatRelativeTime(record.achievedAt))}</span>
     </li>
   `;
 }
 
-function renderComment(comment: Comment, index: number): string {
-  const avatarVariant = (index % 5) + 1;
+function renderComment(comment: GameComment, index: number): string {
+  const initial = Array.from(comment.authorName)[0]?.toUpperCase() ?? '?';
+  const avatarVariant = (index % AVATAR_VARIANTS) + 1;
+  const icon = comment.isLikedByCurrentUser ? heartActiveIcon : heartIcon;
+
   return `
     <li class="comment">
-      <span class="avatar avatar--${avatarVariant}">${comment.initial}</span>
+      <span class="avatar avatar--${avatarVariant}" aria-hidden="true">${escapeHtml(initial)}</span>
       <div class="comment__body">
         <div class="comment__meta">
-          <span class="comment__name">${comment.name}</span>
-          <span class="comment__time">${comment.time}</span>
+          <span class="comment__name">${escapeHtml(comment.authorName)}</span>
+          <span class="comment__time">${escapeHtml(formatRelativeTime(comment.createdAt))}</span>
         </div>
-        <p class="comment__text">${comment.text}</p>
-        <button type="button" class="comment__like" aria-label="Like comment by ${comment.name}">
-          <img src="${heartIcon}" alt="" width="14" height="14" />
-          ${comment.likes}
-        </button>
+        <p class="comment__text">${escapeHtml(comment.text)}</p>
+        <span class="comment__like${comment.isLikedByCurrentUser ? ' is-liked' : ''}" aria-label="${
+    comment.likesCount
+  } likes">
+          <img src="${icon}" alt="" width="14" height="14" />
+          ${comment.likesCount}
+        </span>
       </div>
     </li>
   `;
 }
 
-export function createGameDetailsDialog(game: GameDetails = sampleGame): HTMLDialogElement {
-  const dialog = document.createElement('dialog');
-  dialog.className = 'game-dialog';
-  dialog.innerHTML = `
-    <div class="game-dialog__panel">
+function createDetailsSkeleton(): HTMLElement {
+  const wrapper = createElement('div', 'game-dialog__skeleton');
+  const content = createElement('div', 'game-dialog__content');
+  const records = createElement('div', 'records__list');
+  const comments = createElement('div', 'comments__list');
+
+  records.append(...Array.from({ length: SKELETON_RECORDS }, () => createSkeleton('line')));
+  comments.append(...Array.from({ length: SKELETON_COMMENTS }, () => createSkeleton('line')));
+  content.append(
+    createSkeleton('title'),
+    createSkeleton('line'),
+    createSkeleton('line'),
+    createSkeleton('line'),
+    records
+  );
+  wrapper.append(createSkeleton('image'), content);
+  wrapper.setAttribute('aria-hidden', 'true');
+
+  return wrapper;
+}
+
+function createCommentsSkeleton(): HTMLElement {
+  const list = createElement('div', 'comments__list');
+  list.setAttribute('aria-hidden', 'true');
+  list.append(...Array.from({ length: SKELETON_COMMENTS }, () => createSkeleton('line')));
+
+  return list;
+}
+
+function createNotFoundState(): HTMLElement {
+  const wrapper = createElement('div', 'game-dialog__state');
+  wrapper.append(
+    createEmptyState('Game Not Found', 'We could not find this game. It may have been removed.')
+  );
+
+  return wrapper;
+}
+
+function loadComments(slug: string, region: HTMLElement, heading: HTMLElement): void {
+  void loadIntoRegion<GameCommentsResponse>({
+    target: region,
+    load: (signal) => fetchGameComments(slug, signal),
+    renderSkeleton: createCommentsSkeleton,
+    isEmpty: (response) => response.data.length === 0,
+    renderEmpty: (response) => {
+      heading.textContent = `Comments (${response.meta.totalComments})`;
+
+      return createEmptyState('No comments yet');
+    },
+    renderContent: (response) => {
+      heading.textContent = `Comments (${response.meta.totalComments})`;
+      const list = createElement('ul', 'comments__list', response.data.map(renderComment).join(''));
+
+      return list;
+    },
+  });
+}
+
+function renderDetails(game: GameDetails): HTMLElement {
+  const wrapper = createElement(
+    'div',
+    'game-dialog__details',
+    `
       <div class="game-dialog__hero">
-        <img src="${tukoniImage}" alt="${game.title}" />
-        <div class="game-dialog__hero-actions">
-          <button type="button" class="hero-icon-btn game-dialog__close" aria-label="Close dialog">
-            <img src="${closeIcon}" alt="Close dialog" width="16" height="16" />
-          </button>
-        </div>
+        <img src="${escapeHtml(resolveAssetUrl(game.heroImage))}" alt="${escapeHtml(game.name)}" />
       </div>
 
       <div class="game-dialog__content">
         <div class="game-dialog__title-row">
-          <h2>${game.title}</h2>
+          <h2>${escapeHtml(game.name)}</h2>
           <span class="game-dialog__stat">
-            <img src="${starIcon}" alt="" width="16" height="16" /> ${game.rating}
+            <img src="${starIcon}" alt="" width="16" height="16" /> ${game.rating.toFixed(1)}
           </span>
           <span class="game-dialog__stat">
-            <img src="${heartIcon}" alt="" width="16" height="16" /> ${game.likes}
+            <img src="${heartIcon}" alt="" width="16" height="16" /> ${formatCount(game.likesCount)}
           </span>
         </div>
 
-        <p class="game-dialog__desc">${game.description}</p>
+        <p class="game-dialog__desc">${escapeHtml(game.fullDescription)}</p>
 
         <div class="detail-chips">
-          <div class="detail-chip"><span>Genre</span><strong>${game.genre}</strong></div>
-          <div class="detail-chip"><span>Players</span><strong>${game.players}</strong></div>
-          <div class="detail-chip"><span>Duration</span><strong>${game.duration}</strong></div>
-          <div class="detail-chip"><span>Price</span><strong>${game.price}</strong></div>
-        </div>
-
-        <div class="game-dialog__actions">
-          <button type="button" class="btn btn--primary">Play Now</button>
-          <button type="button" class="btn btn--outline-lg">
-            <img src="${heartIcon}" alt="" width="24" height="24" />
-            <span class="btn--outline-lg__label">Add to Favorites</span>
-          </button>
+          <div class="detail-chip"><span>Genre</span><strong>${escapeHtml(
+            game.specs.genre
+          )}</strong></div>
+          <div class="detail-chip"><span>Players</span><strong>${escapeHtml(
+            game.specs.players
+          )}</strong></div>
+          <div class="detail-chip"><span>Duration</span><strong>${escapeHtml(
+            game.specs.duration
+          )}</strong></div>
+          <div class="detail-chip"><span>Price</span><strong>${escapeHtml(
+            game.specs.price
+          )}</strong></div>
         </div>
 
         <section class="records">
           <h3><span aria-hidden="true">🏆</span> Top Records</h3>
           <ul class="records__list">
-            ${game.records.map(renderRecord).join('')}
+            ${game.topRecords.map(renderRecord).join('')}
           </ul>
         </section>
 
         <section class="comments">
-          <h3>Comments (${game.comments.length})</h3>
-          <form class="comment-composer">
-            <span class="avatar avatar--1">U</span>
-            <input type="text" placeholder="Write a comment..." aria-label="Write a comment" />
-            <button type="submit" aria-label="Send comment" class="comment-send-btn">
-              <img src="${sendTrigger}" alt="Send comment" />
-            </button>
-          </form>
-          <ul class="comments__list">
-            ${game.comments.map(renderComment).join('')}
-          </ul>
+          <h3 data-comments-heading>Comments</h3>
+          <div data-comments-region></div>
         </section>
       </div>
+    `
+  );
+
+  const heading = wrapper.querySelector<HTMLElement>('[data-comments-heading]');
+  const region = wrapper.querySelector<HTMLElement>('[data-comments-region]');
+  if (heading && region) {
+    loadComments(game.slug, region, heading);
+  }
+
+  return wrapper;
+}
+
+async function loadGame(slug: string, signal: AbortSignal): Promise<GameDetails | null> {
+  try {
+    const response = await fetchGameDetails(slug, signal);
+
+    return response.data;
+  } catch (error) {
+    if (isUnknownResourceError(error)) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+export function createGameDetailsDialog(): GameDetailsDialog {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'game-dialog';
+  dialog.setAttribute('aria-label', 'Game details');
+  dialog.innerHTML = `
+    <div class="game-dialog__panel">
+      <div class="game-dialog__close-bar">
+        <button type="button" class="hero-icon-btn game-dialog__close" aria-label="Close dialog">
+          <img src="${closeIcon}" alt="" width="16" height="16" />
+        </button>
+      </div>
+      <div class="game-dialog__body"></div>
     </div>
   `;
 
+  const panel = dialog.querySelector<HTMLElement>('.game-dialog__panel')!;
+  const body = dialog.querySelector<HTMLElement>('.game-dialog__body')!;
+  let shownSlug: string | null = null;
+
   dialog.querySelector('.game-dialog__close')!.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close();
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
   });
 
-  const composer = dialog.querySelector<HTMLFormElement>('.comment-composer')!;
-  const input = composer.querySelector<HTMLInputElement>('input')!;
-  const sendButton = composer.querySelector<HTMLButtonElement>('.comment-send-btn')!;
-
-  const updateComposerState = (): void => {
-    const isEmpty = input.value.trim().length === 0;
-    sendButton.disabled = isEmpty;
-  };
-
-  input.addEventListener('input', updateComposerState);
-  updateComposerState();
-
-  composer.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (input.value.trim().length === 0) {
+  function show(slug: string): void {
+    if (dialog.open && shownSlug === slug) {
       return;
     }
-    input.value = '';
-    updateComposerState();
-  });
 
-  dialog.querySelectorAll<HTMLButtonElement>('.comment__like').forEach((likeButton) => {
-    likeButton.addEventListener('click', () => {
-      const current = likeButton.classList.toggle('is-liked');
-      const fakeCount = Number(likeButton.textContent?.trim() ?? '0');
-      const nextValue = current ? fakeCount + 1 : fakeCount - 1;
-      likeButton.innerHTML = `<img src="${heartIcon}" alt="" width="14" height="14" /> ${nextValue}`;
-      likeButton.setAttribute('aria-pressed', String(current));
+    shownSlug = slug;
+    panel.scrollTop = 0;
+    if (!dialog.open) dialog.showModal();
+
+    void loadIntoRegion<GameDetails | null>({
+      target: body,
+      load: (signal) => loadGame(slug, signal),
+      renderSkeleton: createDetailsSkeleton,
+      isEmpty: (game) => game === null,
+      renderEmpty: createNotFoundState,
+      renderContent: (game) => (game === null ? createNotFoundState() : renderDetails(game)),
     });
-  });
+  }
 
-  const favoriteButton = dialog.querySelector<HTMLButtonElement>('.btn--outline-lg');
-  favoriteButton?.addEventListener('click', () => {
-    const active = favoriteButton.classList.toggle('is-favorite');
-    const buttonImage = favoriteButton.querySelector('img');
-    if (buttonImage) {
-      buttonImage.src = active
-        ? '../../assets/images/heart.png'
-        : '../../assets/images/heartnotactive.png';
-    }
-  });
+  function hide(): void {
+    shownSlug = null;
+    if (dialog.open) dialog.close();
+  }
 
-  return dialog;
+  return { element: dialog, show, hide };
 }
