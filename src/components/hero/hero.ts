@@ -1,5 +1,6 @@
 import './hero.scss';
 import heroImage from '../../assets/images/hero.png';
+import { router } from '../../router/router';
 
 export function createHero(): HTMLElement {
   const section = document.createElement('section');
@@ -13,7 +14,7 @@ export function createHero(): HTMLElement {
           Discover hundreds of curated casual mini-games. Play instantly in
           your browser — puzzle, match-3, farm, and board classics.
         </p>
-        <a href="/library" class="btn btn--primary">Browse Library</a>
+        <a href="${router.href('/library')}" class="btn btn--primary">Browse Library</a>
       </div>
     </div>
   `;
