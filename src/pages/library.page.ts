@@ -7,6 +7,14 @@ export function createLibraryPage(): HTMLElement {
   const page = document.createElement('main');
   page.className = 'library-page';
   page.setAttribute('aria-label', 'Game library page');
-  page.append(createLibraryHeader(), createFilterBar(), createGameGrid(), createPagination(1, 1));
+
+  const filterBar = createFilterBar({
+    onCategoryChange: () => undefined,
+    onSortChange: () => undefined,
+  });
+  const pagination = createPagination(() => undefined);
+
+  page.append(createLibraryHeader(), filterBar.element, createGameGrid(), pagination.element);
+
   return page;
 }
