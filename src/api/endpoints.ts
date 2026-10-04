@@ -1,8 +1,9 @@
-import { LIBRARY_PAGE_SIZE } from './config';
+import { COMMENTS_LIMIT, LIBRARY_PAGE_SIZE } from './config';
 import { getJson } from './http';
 import type {
   CategoriesResponse,
   FeaturedGamesResponse,
+  GameCommentsResponse,
   GameDetailsResponse,
   GamesListResponse,
   GamesQuery,
@@ -36,4 +37,15 @@ export function fetchLeaderboard(signal?: AbortSignal): Promise<LeaderboardRespo
 
 export function fetchGameDetails(slug: string, signal?: AbortSignal): Promise<GameDetailsResponse> {
   return getJson<GameDetailsResponse>(`/games/${encodeURIComponent(slug)}`, undefined, signal);
+}
+
+export function fetchGameComments(
+  slug: string,
+  signal?: AbortSignal
+): Promise<GameCommentsResponse> {
+  return getJson<GameCommentsResponse>(
+    `/games/${encodeURIComponent(slug)}/comments`,
+    { limit: COMMENTS_LIMIT, sort: 'newest' },
+    signal
+  );
 }

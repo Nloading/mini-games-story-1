@@ -3,6 +3,7 @@ import { API_BASE_URL } from './config';
 type QueryValue = string | number | boolean | undefined;
 export type QueryParams = Record<string, QueryValue>;
 
+export const HTTP_BAD_REQUEST = 400;
 export const HTTP_NOT_FOUND = 404;
 export const HTTP_TOO_MANY_REQUESTS = 429;
 
@@ -28,6 +29,13 @@ export function isAbortError(error: unknown): boolean {
 
 export function isNotFoundError(error: unknown): boolean {
   return error instanceof ApiError && error.status === HTTP_NOT_FOUND;
+}
+
+export function isUnknownResourceError(error: unknown): boolean {
+  return (
+    error instanceof ApiError &&
+    (error.status === HTTP_NOT_FOUND || error.status === HTTP_BAD_REQUEST)
+  );
 }
 
 export function getErrorMessage(error: unknown): string {

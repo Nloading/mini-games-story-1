@@ -90,3 +90,23 @@ export interface GamesQuery {
   sort: SortValue;
   page: number;
 }
+
+export interface GameComment {
+  commentId: string;
+  authorName: string;
+  text: string;
+  likesCount: number;
+  isLikedByCurrentUser: boolean;
+  createdAt: string;
+}
+
+export interface GameCommentsMeta {
+  totalComments: number;
+  returnedCount: number;
+  sort: string;
+}
+
+export interface GameCommentsResponse {
+  data: GameComment[];
+  meta: GameCommentsMeta;
+}
