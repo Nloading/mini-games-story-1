@@ -97,6 +97,24 @@
   scroll-snap-align: center;
   transition: flex-basis 0.35s ease, aspect-ratio 0.35s ease;
 
+  &__button {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+    font: inherit;
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
   &--featured {
     flex: 0 0 min(480px, 100%);
     aspect-ratio: 16 / 9;

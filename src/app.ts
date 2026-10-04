@@ -102,8 +102,11 @@ export function createApp(): HTMLElement {
     if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
     if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
 
-    const detailsButton = target.closest<HTMLElement>('.library-card__details');
-    if (detailsButton?.dataset.slug) router.openGame(detailsButton.dataset.slug);
+    const gameDetailsTrigger = target.closest<HTMLElement>(
+      '.library-card__details, .game-card__button'
+    );
+    const slug = gameDetailsTrigger?.dataset.slug ?? gameDetailsTrigger?.dataset.gameSlug;
+    if (slug) router.openGame(slug);
   });
 
   router.start();

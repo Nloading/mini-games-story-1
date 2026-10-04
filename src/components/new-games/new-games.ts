@@ -10,6 +10,7 @@ import winterImage from '../../assets/images/winter.jpg';
 import shelveImage from '../../assets/images/shelve.jpg';
 
 interface Game {
+  slug: string;
   title: string;
   rating?: number;
   likes?: string;
@@ -18,33 +19,68 @@ interface Game {
 }
 
 const games: Game[] = [
-  { title: 'Tailside Cafe', rating: 4.8, likes: '12.3K', image: tailsideImage },
-  { title: 'Vacation Cafe Simulator', rating: 4.8, likes: '28.7K', image: vacationImage },
-  { title: 'ISLANDERS: New Shores', rating: 4.9, likes: '54.2K', image: islandersImage },
-  { title: 'Winter Burrow', rating: 4.9, likes: '32.4K', image: winterImage },
-  { title: 'Shelve Potions', rating: 4.8, likes: '21.3K', badge: '1.0', image: shelveImage },
+  {
+    slug: 'tailside-cozy-cafe-sim',
+    title: 'Tailside Cafe',
+    rating: 4.8,
+    likes: '12.3K',
+    image: tailsideImage,
+  },
+  {
+    slug: 'vacation-cafe-simulator',
+    title: 'Vacation Cafe Simulator',
+    rating: 4.8,
+    likes: '28.7K',
+    image: vacationImage,
+  },
+  {
+    slug: 'islanders-new-shores',
+    title: 'ISLANDERS: New Shores',
+    rating: 4.9,
+    likes: '54.2K',
+    image: islandersImage,
+  },
+  {
+    slug: 'winter-burrow',
+    title: 'Winter Burrow',
+    rating: 4.9,
+    likes: '32.4K',
+    image: winterImage,
+  },
+  {
+    slug: 'shelve-the-potions',
+    title: 'Shelve Potions',
+    rating: 4.8,
+    likes: '21.3K',
+    badge: '1.0',
+    image: shelveImage,
+  },
 ];
 
 function renderCard(game: Game): string {
   return `
     <li class="game-card">
-      <img class="game-card__cover" src="${game.image ?? ''}" alt="${game.title}" loading="lazy" />
-      ${game.badge ? `<span class="game-card__badge">${game.badge}</span>` : ''}
-      <div class="game-card__overlay">
-        <p class="game-card__title">${game.title}</p>
-        <div class="game-card__meta">
-          ${
-            game.rating
-              ? `<span class="game-card__stat"><img src="${starIcon}" alt="" width="14" height="14" />${game.rating}</span>`
-              : ''
-          }
-          ${
-            game.likes
-              ? `<span class="game-card__stat"><img src="${likeIcon}" alt="" width="14" height="14" />${game.likes}</span>`
-              : ''
-          }
-        </div>
-      </div>
+      <button type="button" class="game-card__button" data-game-slug="${
+        game.slug
+      }" aria-label="View details for ${game.title}">
+        <img class="game-card__cover" src="${game.image ?? ''}" alt="" loading="lazy" />
+        ${game.badge ? `<span class="game-card__badge">${game.badge}</span>` : ''}
+        <span class="game-card__overlay">
+          <span class="game-card__title">${game.title}</span>
+          <span class="game-card__meta">
+            ${
+              game.rating
+                ? `<span class="game-card__stat"><img src="${starIcon}" alt="" width="14" height="14" />${game.rating}</span>`
+                : ''
+            }
+            ${
+              game.likes
+                ? `<span class="game-card__stat"><img src="${likeIcon}" alt="" width="14" height="14" />${game.likes}</span>`
+                : ''
+            }
+          </span>
+        </span>
+      </button>
     </li>
   `;
 }
