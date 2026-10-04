@@ -26,11 +26,11 @@
   },
   "lint-staged": {
     "src/**/*.{ts,js}": [
-      "npm run lint",
-      "npm run format"
+      "eslint --max-warnings=0",
+      "prettier --write"
     ],
     "src/**/*.{scss,html,md,json}": [
-      "npm run format"
+      "prettier --write"
     ]
   }
 }

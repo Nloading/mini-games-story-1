@@ -180,3 +180,14 @@
     margin-left: 0;
   }
 }
+
+.library-card--skeleton {
+  .skeleton--image {
+    border-radius: 0;
+  }
+
+  .library-card__body {
+    flex: 1 1 auto;
+    gap: $space-2;
+  }
+}
