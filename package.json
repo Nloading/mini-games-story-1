@@ -32,5 +32,8 @@
     "src/**/*.{scss,html,md,json}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "firebase": "^12.19.0"
   }
 }
