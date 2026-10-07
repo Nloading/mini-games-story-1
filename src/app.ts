@@ -8,6 +8,8 @@ import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
 import { createHomePage } from '@/pages/home.page';
 import { createLibraryPage } from '@/pages/library.page';
 import { createNotFoundPage } from '@/pages/not-found.page';
+import { initSession, subscribeSession, validateSession } from '@/auth/session-store';
+import { showSnackbar } from '@/components/snackbar/snackbar';
 
 function createPage(state: RouteState): HTMLElement {
   switch (state.page) {
@@ -83,6 +85,7 @@ export function createApp(): HTMLElement {
   });
 
   router.subscribe((state, previous) => {
+    validateSession();
     if (needsNewPage(state, previous)) {
       view.replaceChildren(createPage(state));
       if (previous !== null) window.scrollTo(0, 0);
@@ -108,6 +111,18 @@ export function createApp(): HTMLElement {
     const slug = gameDetailsTrigger?.dataset.slug ?? gameDetailsTrigger?.dataset.gameSlug;
     if (slug) router.openGame(slug);
   });
+
+  subscribeSession((_session, event) => {
+    if (event === 'expired') {
+      showSnackbar('Your session has expired. Please log in again.', 'warning');
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') validateSession();
+  });
+
+  initSession();
 
   router.start();
 
