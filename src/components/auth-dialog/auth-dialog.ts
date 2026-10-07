@@ -7,12 +7,26 @@ import googleIcon from '../../assets/images/google.png';
 import { bindAuthForm } from './auth-form';
 import type { AuthFormController } from './auth-form';
 import type { AuthMode } from '@/router/url-state';
+import closeIcon from '../../assets/images/closeIcon.png';
+import {
+  AuthCancelledError,
+  getAuthErrorMessage,
+  loginWithEmail,
+  loginWithGoogle,
+  registerWithEmail,
+} from '@/auth/auth-service';
+import type { AuthProfile } from '@/auth/auth-service';
+import { startSession } from '@/auth/session-store';
+import { showSnackbar } from '@/components/snackbar/snackbar';
 
 export function createAuthDialog(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
   dialog.className = 'auth-dialog';
   dialog.innerHTML = `
     <div class="auth-dialog__panel">
+      <button type="button" class="auth-dialog__close" aria-label="Close dialog">
+        <img src="${closeIcon}" alt="" width="16" height="16" />
+      </button>
 
       <div class="auth-tabs" role="tablist">
         <button type="button" role="tab" class="auth-tabs__btn is-active" data-tab="login" aria-selected="true">Login</button>
@@ -173,12 +187,87 @@ export function createAuthDialog(): HTMLDialogElement {
     });
   });
 
-  dialog.querySelectorAll<HTMLFormElement>('.auth-form').forEach((form) => {
-    form.addEventListener('submit', (event) => event.preventDefault());
+  const closeButton = dialog.querySelector<HTMLButtonElement>('.auth-dialog__close')!;
+  let pending = false;
+
+  function setPending(value: boolean): void {
+    pending = value;
+    dialog.setAttribute('aria-busy', String(value));
+    controllers.forEach((controller) => controller.setDisabled(value));
+    tabs.forEach((tab) => {
+      tab.disabled = value;
+    });
+    closeButton.disabled = value;
+  }
+
+  async function runAuth(
+    trigger: HTMLButtonElement,
+    action: () => Promise<AuthProfile>
+  ): Promise<void> {
+    if (pending) return;
+
+    setPending(true);
+    trigger.classList.add('is-loading');
+
+    try {
+      startSession(await action());
+      controllers.forEach((controller) => controller.reset());
+      showSnackbar('You are signed in.', 'success');
+      dialog.close();
+    } catch (error) {
+      if (error instanceof AuthCancelledError) {
+        showSnackbar('Sign-in was cancelled.', 'info');
+      } else {
+        showSnackbar(getAuthErrorMessage(error), 'error');
+      }
+    } finally {
+      trigger.classList.remove('is-loading');
+      setPending(false);
+    }
+  }
+
+  panels.forEach((panel) => {
+    const mode: AuthMode = panel.dataset.panel === 'register' ? 'register' : 'login';
+
+    panel.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const controller = controllers.get(mode);
+      const submit = panel.querySelector<HTMLButtonElement>('.auth-form__submit');
+      if (!controller || !submit || !controller.isValid()) return;
+
+      const values = controller.getValues();
+      const email = values.email.trim();
+
+      void runAuth(submit, () =>
+        mode === 'login'
+          ? loginWithEmail(email, values.password)
+          : registerWithEmail(values.username, email, values.password)
+      );
+    });
   });
 
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close();
+  dialog.querySelectorAll<HTMLButtonElement>('.btn--google').forEach((button) => {
+    button.addEventListener('click', () => {
+      void runAuth(button, loginWithGoogle);
+    });
+  });
+
+  closeButton.addEventListener('click', () => {
+    if (!pending) dialog.close();
+  });
+
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog && !pending) dialog.close();
+  });
+
+  // Escape: block both the keydown and the cancel event. Chrome can close a dialog on a repeated
+  // Escape if only `cancel` is prevented.
+  dialog.addEventListener('keydown', (event) => {
+    if (pending && event.key === 'Escape') event.preventDefault();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    if (pending) event.preventDefault();
   });
 
   return dialog;
