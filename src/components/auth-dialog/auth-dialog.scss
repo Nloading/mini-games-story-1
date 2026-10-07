@@ -350,3 +350,28 @@
 .auth-field__control:has(input[aria-invalid='true']) {
   border-color: $color-error;
 }
+
+.btn.is-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: $size-2;
+    height: $size-2;
+    border: $border-width-medium solid $color-on-primary;
+    border-top-color: transparent;
+    border-radius: $radius-full;
+    animation: auth-spin $motion-duration-skeleton linear infinite;
+  }
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
