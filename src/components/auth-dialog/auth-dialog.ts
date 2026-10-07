@@ -4,6 +4,9 @@ import passwordIcon from '../../assets/images/password.png';
 import eyeIcon from '../../assets/images/eye.png';
 import personIcon from '../../assets/images/person.png';
 import googleIcon from '../../assets/images/google.png';
+import { bindAuthForm } from './auth-form';
+import type { AuthFormController } from './auth-form';
+import type { AuthMode } from '@/router/url-state';
 
 export function createAuthDialog(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
@@ -24,19 +27,21 @@ export function createAuthDialog(): HTMLDialogElement {
           <span>Email Address</span>
           <span class="auth-field__control">
             <img src="${mailIcon}" alt="Email" width="16" height="16" />
-            <input type="email" name="email" placeholder="e.g. alex@minigames.com" autocomplete="email" required />
+            <input type="email" name="email" placeholder="e.g. alex@minigames.com" autocomplete="email" aria-describedby="login-email-error" required />
           </span>
+          <span class="auth-field__error" id="login-email-error" data-error-for="email" role="alert" hidden></span>
         </label>
 
         <label class="auth-field">
           <span>Password</span>
           <span class="auth-field__control">
             <img src="${passwordIcon}" alt="Password" width="16" height="16" />
-            <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" aria-describedby="login-password-error" required />
             <button type="button" class="auth-field__toggle" aria-label="Show password">
               <img src="${eyeIcon}" alt="Show password" width="16" height="16" />
             </button>
           </span>
+          <span class="auth-field__error" id="login-password-error" data-error-for="password" role="alert" hidden></span>
         </label>
 
         <a href="#" class="auth-form__forgot">Forgot Password?</a>
@@ -63,32 +68,36 @@ export function createAuthDialog(): HTMLDialogElement {
           <span>Username</span>
           <span class="auth-field__control">
             <img src="${personIcon}" alt="Username" width="16" height="16" />
-            <input type="text" name="username" placeholder="e.g. CozyGamer_99" autocomplete="username" required />
+            <input type="text" name="username" placeholder="e.g. CozyGamer_99" autocomplete="username" aria-describedby="register-username-error" required />
           </span>
+          <span class="auth-field__error" id="register-username-error" data-error-for="username" role="alert" hidden></span>
         </label>
 
         <label class="auth-field">
           <span>Email Address</span>
           <span class="auth-field__control">
             <img src="${mailIcon}" alt="Email" width="16" height="16" />
-            <input type="email" name="email" placeholder="your.email@domain.com" autocomplete="email" required />
+            <input type="email" name="email" placeholder="your.email@domain.com" autocomplete="email" aria-describedby="register-email-error" required />
           </span>
+          <span class="auth-field__error" id="register-email-error" data-error-for="email" role="alert" hidden></span>
         </label>
 
         <label class="auth-field">
           <span>Password</span>
           <span class="auth-field__control">
             <img src="${passwordIcon}" alt="Password" width="16" height="16" />
-            <input type="password" name="password" placeholder="Min. 8 characters" autocomplete="new-password" minlength="8" required />
+            <input type="password" name="password" placeholder="Min. 6 characters" autocomplete="new-password" aria-describedby="register-password-error" required />
           </span>
+          <span class="auth-field__error" id="register-password-error" data-error-for="password" role="alert" hidden></span>
         </label>
 
         <label class="auth-field">
           <span>Confirm Password</span>
           <span class="auth-field__control">
             <img src="${passwordIcon}" alt="Confirm password" width="16" height="16" />
-            <input type="password" name="confirmPassword" placeholder="Repeat your password" autocomplete="new-password" minlength="8" required />
+            <input type="password" name="confirmPassword" placeholder="Min. 6 characters" autocomplete="new-password" aria-describedby="register-confirm-error" required />
           </span>
+          <span class="auth-field__error" id="register-confirm-error" data-error-for="confirmPassword" role="alert" hidden></span>
         </label>
 
         <button type="submit" class="btn btn--primary auth-form__submit">Create Account</button>
@@ -109,8 +118,20 @@ export function createAuthDialog(): HTMLDialogElement {
 
   const tabs = dialog.querySelectorAll<HTMLButtonElement>('.auth-tabs__btn');
   const panels = dialog.querySelectorAll<HTMLFormElement>('.auth-form');
+  const controllers = new Map<AuthMode, AuthFormController>();
+  panels.forEach((panel) => {
+    const mode: AuthMode = panel.dataset.panel === 'register' ? 'register' : 'login';
+    controllers.set(mode, bindAuthForm(panel, mode));
+  });
+  let activeMode: AuthMode | null = null;
 
   function activate(tabName: string): void {
+    const mode: AuthMode = tabName === 'register' ? 'register' : 'login';
+    if (mode !== activeMode) {
+      controllers.forEach((controller) => controller.reset());
+      activeMode = mode;
+    }
+
     tabs.forEach((tab) => {
       const isActive = tab.dataset.tab === tabName;
       tab.classList.toggle('is-active', isActive);

@@ -337,3 +337,16 @@
     opacity: 0;
   }
 }
+
+.auth-field__error {
+  font-size: $font-label-medium;
+  color: $color-error;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.auth-field__control:has(input[aria-invalid='true']) {
+  border-color: $color-error;
+}
