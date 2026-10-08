@@ -1,6 +1,8 @@
 import './header.scss';
 import logoIcon from '../../assets/images/logo.png';
-
+import { createProfile } from '../profile/profile';
+import { getSession, subscribeSession } from '@/auth/session-store';
+import type { AppSession } from '@/auth/session';
 import { router } from '../../router/router';
 import type { PageName } from '../../router/url-state';
 
@@ -22,8 +24,9 @@ export function createHeader(): HTMLElement {
       </nav>
 
       <div class="site-header__actions">
-        <button type="button" class="btn btn--outline btn--sm">Log In</button>
-        <button type="button" class="btn btn--primary btn--sm">Sign Up</button>
+        <button type="button" class="btn btn--outline btn--sm" data-guest-only>Log In</button>
+        <button type="button" class="btn btn--primary btn--sm" data-guest-only>Sign Up</button>
+        <div class="site-header__profile"></div>
         <button type="button" class="site-header__menu" aria-label="Open menu" aria-expanded="false" aria-controls="main-navigation">
           <span></span>
           <span></span>
@@ -51,6 +54,16 @@ export function createHeader(): HTMLElement {
     menuButton.setAttribute('aria-expanded', String(isOpen));
     nav?.classList.toggle('is-open', isOpen);
   });
+
+  const profileSlot = header.querySelector<HTMLElement>('.site-header__profile')!;
+
+  function renderAuthState(session: AppSession | null): void {
+    header.classList.toggle('is-authenticated', session !== null);
+    profileSlot.replaceChildren(...(session === null ? [] : [createProfile(session, 'header')]));
+  }
+
+  renderAuthState(getSession());
+  subscribeSession((session) => renderAuthState(session));
 
   return header;
 }

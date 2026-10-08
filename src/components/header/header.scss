@@ -245,3 +245,15 @@
   line-height: 17px;
   min-height: 37px;
 }
+
+.site-header__profile {
+  display: none;
+
+  @include respond-up('tablet') {
+    display: flex;
+  }
+}
+
+.site-header.is-authenticated [data-guest-only] {
+  display: none;
+}
