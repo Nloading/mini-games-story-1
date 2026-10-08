@@ -5,6 +5,7 @@ import { createProfile } from '../profile/profile';
 import { getSession, subscribeSession } from '@/auth/session-store';
 import type { AppSession } from '@/auth/session';
 import { router } from '../../router/router';
+import { openAuth } from '@/auth/auth-guard';
 
 export function createMobileNav(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
@@ -38,7 +39,7 @@ export function createMobileNav(): HTMLDialogElement {
   dialog.querySelectorAll<HTMLButtonElement>('[data-auth-tab]').forEach((button) => {
     button.addEventListener('click', () => {
       dialog.close();
-      router.openAuth(button.dataset.authTab === 'register' ? 'register' : 'login');
+      openAuth(button.dataset.authTab === 'register' ? 'register' : 'login');
     });
   });
 
