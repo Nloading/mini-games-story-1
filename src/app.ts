@@ -8,7 +8,7 @@ import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
 import { createHomePage } from '@/pages/home.page';
 import { createLibraryPage } from '@/pages/library.page';
 import { createNotFoundPage } from '@/pages/not-found.page';
-import { initSession, subscribeSession, validateSession } from '@/auth/session-store';
+import { initSession, logout, subscribeSession, validateSession } from '@/auth/session-store';
 import { showSnackbar } from '@/components/snackbar/snackbar';
 
 function createPage(state: RouteState): HTMLElement {
@@ -45,6 +45,18 @@ export function createApp(): HTMLElement {
   const authDialog = createAuthDialog();
   const gameDialog = createGameDetailsDialog();
   const mobileNav = createMobileNav();
+
+  async function handleLogout(): Promise<void> {
+    mobileNav.close();
+
+    const signedOut = await logout();
+    if (signedOut) {
+      showSnackbar('You have been logged out.', 'success');
+    } else {
+      showSnackbar('Firebase sign-out failed. You are in Guest Mode.', 'error');
+    }
+  }
+
   document.body.append(authDialog, gameDialog.element, mobileNav);
 
   const burgerButton = root.querySelector<HTMLButtonElement>('.site-header__menu');
@@ -102,6 +114,7 @@ export function createApp(): HTMLElement {
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
+    if (target.closest('[data-action="logout"]')) void handleLogout();
     if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
     if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
 
