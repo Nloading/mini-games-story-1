@@ -1,6 +1,9 @@
 import './mobile-nav.scss';
 
 import logoIcon from '../../assets/images/logo.png';
+import { createProfile } from '../profile/profile';
+import { getSession, subscribeSession } from '@/auth/session-store';
+import type { AppSession } from '@/auth/session';
 import { router } from '../../router/router';
 
 export function createMobileNav(): HTMLDialogElement {
@@ -22,6 +25,7 @@ export function createMobileNav(): HTMLDialogElement {
         <a href="${router.href('/tournaments')}">Tournaments</a>
         <a href="${router.href('/community')}">Community</a>
       </nav>
+      <div class="mobile-nav__profile"></div>
       <div class="mobile-nav__actions">
         <button type="button" class="btn btn--outline-white" data-auth-tab="login">Log In</button>
         <button type="button" class="btn btn--primary" data-auth-tab="register">Sign Up</button>
@@ -45,6 +49,16 @@ export function createMobileNav(): HTMLDialogElement {
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) dialog.close();
   });
+
+  const profileSlot = dialog.querySelector<HTMLElement>('.mobile-nav__profile')!;
+
+  function renderAuthState(session: AppSession | null): void {
+    dialog.classList.toggle('is-authenticated', session !== null);
+    profileSlot.replaceChildren(...(session === null ? [] : [createProfile(session, 'mobile')]));
+  }
+
+  renderAuthState(getSession());
+  subscribeSession((session) => renderAuthState(session));
 
   return dialog;
 }
