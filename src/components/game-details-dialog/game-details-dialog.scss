@@ -476,3 +476,8 @@
     opacity: 0;
   }
 }
+
+// Auth temporarily replaces Game Details: hidden, but still open and still in the URL.
+.game-dialog.is-suspended {
+  display: none !important;
+}
