@@ -15,11 +15,13 @@ interface ApiErrorBody {
 
 export class ApiError extends Error {
   public readonly status: number | null;
+  public readonly outcomeUnknown: boolean;
 
-  constructor(message: string, status: number | null) {
+  constructor(message: string, status: number | null, outcomeUnknown = false) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.outcomeUnknown = outcomeUnknown;
   }
 }
 
@@ -40,6 +42,16 @@ export function isUnknownResourceError(error: unknown): boolean {
 
 export function getErrorMessage(error: unknown): string {
   return error instanceof ApiError ? error.message : DEFAULT_ERROR_MESSAGE;
+}
+
+export const OUTCOME_UNKNOWN_MESSAGE =
+  'The connection was interrupted, so we cannot tell whether your action was saved.';
+
+const MUTATION_TIMEOUT_MS = 15000;
+const HTTP_SERVER_ERROR = 500;
+
+export function isOutcomeUnknownError(error: unknown): boolean {
+  return error instanceof ApiError && error.outcomeUnknown;
 }
 
 function buildUrl(path: string, params?: QueryParams): string {
@@ -99,5 +111,34 @@ export async function getJson<T>(
       throw error;
     }
     throw new ApiError('Received an invalid response from the server.', response.status);
+  }
+}
+
+export async function postJson<T>(path: string, body: unknown): Promise<T> {
+  let response: Response;
+
+  try {
+    response = await fetch(buildUrl(path), {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(MUTATION_TIMEOUT_MS),
+    });
+  } catch {
+    throw new ApiError(OUTCOME_UNKNOWN_MESSAGE, null, true);
+  }
+
+  if (!response.ok) {
+    throw new ApiError(
+      await readErrorMessage(response),
+      response.status,
+      response.status >= HTTP_SERVER_ERROR
+    );
+  }
+
+  try {
+    return (await response.json()) as T;
+  } catch {
+    throw new ApiError(OUTCOME_UNKNOWN_MESSAGE, response.status, true);
   }
 }

@@ -1,5 +1,13 @@
 export type SortValue = 'rating-desc' | 'rating-asc' | 'name-asc' | 'name-desc';
 
+export interface FavoriteToggleResponse {
+  data: {
+    gameSlug: string;
+    isFavorited: boolean;
+    likesCount: number;
+  };
+}
+
 export interface GameCard {
   slug: string;
   name: string;
