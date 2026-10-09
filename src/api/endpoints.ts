@@ -1,7 +1,8 @@
 import { COMMENTS_LIMIT, LIBRARY_PAGE_SIZE } from './config';
-import { getJson } from './http';
+import { getJson, postJson } from './http';
 import type {
   CategoriesResponse,
+  FavoriteToggleResponse,
   FeaturedGamesResponse,
   GameCommentsResponse,
   GameDetailsResponse,
@@ -35,17 +36,28 @@ export function fetchLeaderboard(signal?: AbortSignal): Promise<LeaderboardRespo
   return getJson<LeaderboardResponse>('/leaderboard', undefined, signal);
 }
 
-export function fetchGameDetails(slug: string, signal?: AbortSignal): Promise<GameDetailsResponse> {
-  return getJson<GameDetailsResponse>(`/games/${encodeURIComponent(slug)}`, undefined, signal);
+export function fetchGameDetails(
+  slug: string,
+  userEmail?: string,
+  signal?: AbortSignal
+): Promise<GameDetailsResponse> {
+  return getJson<GameDetailsResponse>(`/games/${encodeURIComponent(slug)}`, { userEmail }, signal);
 }
 
 export function fetchGameComments(
   slug: string,
+  userEmail?: string,
   signal?: AbortSignal
 ): Promise<GameCommentsResponse> {
   return getJson<GameCommentsResponse>(
     `/games/${encodeURIComponent(slug)}/comments`,
-    { limit: COMMENTS_LIMIT, sort: 'newest' },
+    { limit: COMMENTS_LIMIT, sort: 'newest', userEmail },
     signal
   );
+}
+
+export function toggleFavorite(slug: string, userEmail: string): Promise<FavoriteToggleResponse> {
+  return postJson<FavoriteToggleResponse>(`/games/${encodeURIComponent(slug)}/favorite`, {
+    userEmail,
+  });
 }
