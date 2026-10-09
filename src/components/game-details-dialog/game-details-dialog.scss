@@ -32,6 +32,11 @@
   }
 }
 
+// Auth temporarily replaces Game Details: hidden, but still open and still in the URL.
+.game-dialog.is-suspended {
+  display: none !important;
+}
+
 .game-dialog__panel {
   background-color: $color-bg-card;
   border: 1px solid $color-outline;
@@ -470,4 +475,9 @@
   &.is-closing::backdrop {
     opacity: 0;
   }
+}
+
+// Auth temporarily replaces Game Details: hidden, but still open and still in the URL.
+.game-dialog.is-suspended {
+  display: none !important;
 }

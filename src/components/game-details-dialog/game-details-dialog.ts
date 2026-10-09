@@ -22,6 +22,7 @@ export interface GameDetailsDialog {
   element: HTMLDialogElement;
   show: (slug: string) => void;
   hide: () => void;
+  setSuspended: (value: boolean) => void;
 }
 
 function createElement(tag: string, className: string, html = ''): HTMLElement {
@@ -253,5 +254,9 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     if (dialog.open) dialog.close();
   }
 
-  return { element: dialog, show, hide };
+  function setSuspended(value: boolean): void {
+    dialog.classList.toggle('is-suspended', value);
+  }
+
+  return { element: dialog, show, hide, setSuspended };
 }
