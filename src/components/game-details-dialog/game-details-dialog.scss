@@ -32,9 +32,53 @@
   }
 }
 
-// Auth temporarily replaces Game Details: hidden, but still open and still in the URL.
-.game-dialog.is-suspended {
-  display: none !important;
+.game-dialog__favorite {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: $color-like;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &.is-active {
+    color: $color-like;
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+
+  &.is-loading img {
+    visibility: hidden;
+  }
+
+  &.is-loading::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    margin-block: auto;
+    width: $size-2;
+    height: $size-2;
+    border: $border-width-medium solid $color-like;
+    border-top-color: transparent;
+    border-radius: $radius-full;
+    animation: favorite-spin $motion-duration-skeleton linear infinite;
+  }
+}
+
+@keyframes favorite-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .game-dialog__panel {
