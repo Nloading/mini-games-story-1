@@ -9,9 +9,10 @@ import { resolveAssetUrl } from '@/api/config';
 import type { GameComment, GameCommentsResponse, GameDetails, TopRecord } from '@/api/types';
 import { createEmptyState, createSkeleton } from '@/components/feedback/feedback';
 import { loadIntoRegion } from '@/utils/async-region';
-import { formatCount } from '@/utils/format';
 import { formatRelativeTime } from '@/utils/relative-time';
 import { escapeHtml } from '@/utils/html';
+import { getSession, subscribeSession } from '@/auth/session-store';
+import { createFavoriteControl } from './favorite-control';
 
 const MEDALS: readonly string[] = ['🥇', '🥈', '🥉'];
 const AVATAR_VARIANTS = 5;
@@ -22,6 +23,7 @@ export interface GameDetailsDialog {
   element: HTMLDialogElement;
   show: (slug: string) => void;
   hide: () => void;
+  setSuspended: (value: boolean) => void;
 }
 
 function createElement(tag: string, className: string, html = ''): HTMLElement {
@@ -113,7 +115,7 @@ function createNotFoundState(): HTMLElement {
 function loadComments(slug: string, region: HTMLElement, heading: HTMLElement): void {
   void loadIntoRegion<GameCommentsResponse>({
     target: region,
-    load: (signal) => fetchGameComments(slug, signal),
+    load: (signal) => fetchGameComments(slug, getSession()?.email, signal),
     renderSkeleton: createCommentsSkeleton,
     isEmpty: (response) => response.data.length === 0,
     renderEmpty: (response) => {
@@ -145,9 +147,7 @@ function renderDetails(game: GameDetails): HTMLElement {
           <span class="game-dialog__stat">
             <img src="${starIcon}" alt="" width="16" height="16" /> ${game.rating.toFixed(1)}
           </span>
-          <span class="game-dialog__stat">
-            <img src="${heartIcon}" alt="" width="16" height="16" /> ${formatCount(game.likesCount)}
-          </span>
+          <span data-favorite-slot></span>
         </div>
 
         <p class="game-dialog__desc">${escapeHtml(game.fullDescription)}</p>
@@ -182,6 +182,13 @@ function renderDetails(game: GameDetails): HTMLElement {
     `
   );
 
+  wrapper.querySelector('[data-favorite-slot]')?.replaceWith(
+    createFavoriteControl(game.slug, {
+      isFavorited: game.isLikedByCurrentUser,
+      likesCount: game.likesCount,
+    })
+  );
+
   const heading = wrapper.querySelector<HTMLElement>('[data-comments-heading]');
   const region = wrapper.querySelector<HTMLElement>('[data-comments-region]');
   if (heading && region) {
@@ -193,7 +200,7 @@ function renderDetails(game: GameDetails): HTMLElement {
 
 async function loadGame(slug: string, signal: AbortSignal): Promise<GameDetails | null> {
   try {
-    const response = await fetchGameDetails(slug, signal);
+    const response = await fetchGameDetails(slug, getSession()?.email, signal);
 
     return response.data;
   } catch (error) {
@@ -229,15 +236,7 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     if (event.target === dialog) dialog.close();
   });
 
-  function show(slug: string): void {
-    if (dialog.open && shownSlug === slug) {
-      return;
-    }
-
-    shownSlug = slug;
-    panel.scrollTop = 0;
-    if (!dialog.open) dialog.showModal();
-
+  function load(slug: string): void {
     void loadIntoRegion<GameDetails | null>({
       target: body,
       load: (signal) => loadGame(slug, signal),
@@ -248,10 +247,31 @@ export function createGameDetailsDialog(): GameDetailsDialog {
     });
   }
 
+  function show(slug: string): void {
+    if (dialog.open && shownSlug === slug) {
+      return;
+    }
+
+    shownSlug = slug;
+    panel.scrollTop = 0;
+    if (!dialog.open) dialog.showModal();
+
+    load(slug);
+  }
+
+  // Login, logout and expiry refresh details in the matching mode while the dialog is hidden by Auth.
+  subscribeSession(() => {
+    if (shownSlug !== null && dialog.open) load(shownSlug);
+  });
+
   function hide(): void {
     shownSlug = null;
     if (dialog.open) dialog.close();
   }
 
-  return { element: dialog, show, hide };
+  function setSuspended(value: boolean): void {
+    dialog.classList.toggle('is-suspended', value);
+  }
+
+  return { element: dialog, show, hide, setSuspended };
 }
