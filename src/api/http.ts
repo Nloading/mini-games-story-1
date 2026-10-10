@@ -101,3 +101,37 @@ export async function getJson<T>(
     throw new ApiError('Received an invalid response from the server.', response.status);
   }
 }
+
+export async function postJson<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  let response: Response;
+
+  try {
+    response = await fetch(buildUrl(path), {
+      method: 'POST',
+      signal,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw error;
+    }
+    throw new ApiError('Network error. Please check your connection.', null);
+  }
+
+  if (!response.ok) {
+    throw new ApiError(await readErrorMessage(response), response.status);
+  }
+
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw error;
+    }
+    throw new ApiError('Received an invalid response from the server.', response.status);
+  }
+}
