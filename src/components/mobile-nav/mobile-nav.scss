@@ -137,3 +137,17 @@
     @include focus-ring;
   }
 }
+
+.mobile-nav__profile {
+  display: none;
+}
+
+.mobile-nav.is-authenticated {
+  .mobile-nav__profile {
+    display: flex;
+  }
+
+  .mobile-nav__actions {
+    display: none;
+  }
+}

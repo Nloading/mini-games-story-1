@@ -6,6 +6,7 @@ on:
       - story-1
       - story-2
       - story-3
+      - story-4
   workflow_dispatch:
 
 permissions:

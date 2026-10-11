@@ -10,6 +10,8 @@ A responsive MiniGames browser interface built with TypeScript, Vite, and Sass.
 - `npm run lint` checks TypeScript with ESLint.
 - `npm run format:check` verifies Prettier formatting.
 - `npm run format` formats source files.
+- `npm test` runs the Vitest suite once.
+- `npm run test:coverage` runs the suite and reports V8 coverage.
 
 ## Mock data
 

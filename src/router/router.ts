@@ -41,7 +41,7 @@ function readLocation(): RouteState {
 }
 
 function currentUrl(): string {
-  return `${window.location.pathname}${window.location.search}`;
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
 
 function isDialogEntry(): boolean {
@@ -97,7 +97,11 @@ function applyQuery(patch: QueryPatch, replace: boolean, dialog: boolean): void 
   });
 
   const search = params.toString();
-  writeUrl(`${window.location.pathname}${search === '' ? '' : `?${search}`}`, replace, dialog);
+  writeUrl(
+    `${window.location.pathname}${search === '' ? '' : `?${search}`}${window.location.hash}`,
+    replace,
+    dialog
+  );
 }
 
 function navigate(path: string, options: NavigateOptions = {}): void {

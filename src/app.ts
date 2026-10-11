@@ -8,6 +8,9 @@ import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
 import { createHomePage } from '@/pages/home.page';
 import { createLibraryPage } from '@/pages/library.page';
 import { createNotFoundPage } from '@/pages/not-found.page';
+import { initSession, logout, subscribeSession, validateSession } from '@/auth/session-store';
+import { showSnackbar } from '@/components/snackbar/snackbar';
+import { guardAuthRoute, openAuth } from '@/auth/auth-guard';
 
 function createPage(state: RouteState): HTMLElement {
   switch (state.page) {
@@ -43,6 +46,18 @@ export function createApp(): HTMLElement {
   const authDialog = createAuthDialog();
   const gameDialog = createGameDetailsDialog();
   const mobileNav = createMobileNav();
+
+  async function handleLogout(): Promise<void> {
+    mobileNav.close();
+
+    const signedOut = await logout();
+    if (signedOut) {
+      showSnackbar('You have been logged out.', 'success');
+    } else {
+      showSnackbar('Firebase sign-out failed. You are in Guest Mode.', 'error');
+    }
+  }
+
   document.body.append(authDialog, gameDialog.element, mobileNav);
 
   const burgerButton = root.querySelector<HTMLButtonElement>('.site-header__menu');
@@ -79,28 +94,36 @@ export function createApp(): HTMLElement {
 
   authDialog.addEventListener('auth:tab-change', (event) => {
     const mode = (event as CustomEvent<string>).detail;
-    if (mode === 'login' || mode === 'register') router.openAuth(mode);
+    if (mode === 'login' || mode === 'register') openAuth(mode);
   });
 
   router.subscribe((state, previous) => {
+    validateSession();
+
     if (needsNewPage(state, previous)) {
       view.replaceChildren(createPage(state));
       if (previous !== null) window.scrollTo(0, 0);
     }
 
-    syncAuthDialog(state);
+    // After the page exists: cleaning the URL re-enters this handler with the cleaned state.
+    if (!guardAuthRoute(state)) return;
 
+    // Game first, Auth second, so Auth is always the top dialog when both are in the URL.
     if (state.gameSlug !== null) {
       gameDialog.show(state.gameSlug);
     } else {
       gameDialog.hide();
     }
+
+    syncAuthDialog(state);
+    gameDialog.setSuspended(state.authMode !== null);
   });
 
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement;
-    if (target.closest('.site-header__actions .btn--outline')) router.openAuth('login');
-    if (target.closest('.site-header__actions .btn--primary')) router.openAuth('register');
+    if (target.closest('[data-action="logout"]')) void handleLogout();
+    if (target.closest('.site-header__actions .btn--outline')) openAuth('login');
+    if (target.closest('.site-header__actions .btn--primary')) openAuth('register');
 
     const gameDetailsTrigger = target.closest<HTMLElement>(
       '.library-card__details, .game-card__button'
@@ -108,6 +131,18 @@ export function createApp(): HTMLElement {
     const slug = gameDetailsTrigger?.dataset.slug ?? gameDetailsTrigger?.dataset.gameSlug;
     if (slug) router.openGame(slug);
   });
+
+  subscribeSession((_session, event) => {
+    if (event === 'expired') {
+      showSnackbar('Your session has expired. Please log in again.', 'warning');
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') validateSession();
+  });
+
+  initSession();
 
   router.start();
 
