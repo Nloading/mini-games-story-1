@@ -1,6 +1,6 @@
 import { fetchGameComments } from '@/api/endpoints';
 import type { GameCommentsResponse } from '@/api/types';
-import { getSession } from '@/auth/session-store';
+import { getSession, subscribeSession } from '@/auth/session-store';
 import { createEmptyState, createSkeleton } from '@/components/feedback/feedback';
 import { loadIntoRegion } from '@/utils/async-region';
 import { createAvatarPicker } from '@/utils/avatar';
@@ -62,6 +62,21 @@ export function createCommentsSection(slug: string): HTMLElement {
 
   section.append(heading, createCommentForm(slug, reload), region);
   reload();
+
+  let hasSession = getSession() !== null;
+  const unsubscribe = subscribeSession((session) => {
+    if (!section.isConnected) {
+      unsubscribe();
+      return;
+    }
+
+    const isAuthenticated = session !== null;
+    if (isAuthenticated === hasSession) return;
+
+    hasSession = isAuthenticated;
+    section.querySelector('.comment-form')?.replaceWith(createCommentForm(slug, reload));
+    reload();
+  });
 
   return section;
 }
