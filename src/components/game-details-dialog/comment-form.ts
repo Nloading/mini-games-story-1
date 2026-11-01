@@ -3,6 +3,7 @@ import { postComment } from '@/api/endpoints';
 import { getErrorMessage, isOutcomeUnknownError } from '@/api/http';
 import { getCommentAuthorName, getProfileName } from '@/auth/profile';
 import { requireSession } from '@/auth/protected-action';
+import { bus } from '@/features/achievements/events';
 import { getSession } from '@/auth/session-store';
 import { showSnackbar } from '@/components/snackbar/snackbar';
 import { getAvatarInitial } from '@/utils/avatar';
@@ -96,6 +97,7 @@ export function createCommentForm(slug: string, onPosted: () => void): HTMLFormE
       resize();
       showMessage('');
       showSnackbar('Comment posted.', 'success');
+      bus.emit('comment:posted', { gameSlug: slug });
       onPosted();
     } catch (error) {
       if (isOutcomeUnknownError(error)) {

@@ -3,6 +3,7 @@ import heartActiveIcon from '../../assets/images/heart.png';
 import { toggleFavorite } from '@/api/endpoints';
 import { getErrorMessage, isOutcomeUnknownError } from '@/api/http';
 import { requireSession } from '@/auth/protected-action';
+import { bus } from '@/features/achievements/events';
 import { showSnackbar } from '@/components/snackbar/snackbar';
 import { formatCount } from '@/utils/format';
 
@@ -52,6 +53,7 @@ export function createFavoriteControl(slug: string, initial: FavoriteState): HTM
       const { data } = await toggleFavorite(slug, session.email);
       // State comes only from the server response, never from a local guess.
       state = { isFavorited: data.isFavorited, likesCount: data.likesCount };
+      if (state.isFavorited) bus.emit('favorite:added', { gameSlug: slug });
       showSnackbar(
         state.isFavorited ? 'Added to favorites.' : 'Removed from favorites.',
         'success'
