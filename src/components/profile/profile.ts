@@ -2,6 +2,7 @@ import './profile.scss';
 import personIcon from '../../assets/images/person.png';
 import { getInitials, getProfileName, getSafeAvatarUrl } from '@/auth/profile';
 import type { AppSession } from '@/auth/session';
+import { router } from '@/router/router';
 
 export type ProfileVariant = 'header' | 'mobile';
 
@@ -56,8 +57,9 @@ export function createProfile(session: AppSession, variant: ProfileVariant): HTM
   const root = document.createElement('div');
   root.className = `profile profile--${variant}`;
 
-  const label = document.createElement('span');
+  const label = document.createElement('a');
   label.className = 'profile__name';
+  label.href = router.href('/profile');
   label.textContent = name;
 
   const logoutButton = document.createElement('button');

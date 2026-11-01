@@ -51,6 +51,11 @@ export function createMobileNav(): HTMLDialogElement {
     if (event.target === dialog) dialog.close();
   });
 
+  // The profile link is rendered after login, so it needs delegation to close the menu.
+  dialog.querySelector('.mobile-nav__profile')?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('a')) dialog.close();
+  });
+
   const profileSlot = dialog.querySelector<HTMLElement>('.mobile-nav__profile')!;
 
   function renderAuthState(session: AppSession | null): void {
