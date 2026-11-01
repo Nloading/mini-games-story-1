@@ -6,6 +6,8 @@ import { validateSession } from './session-store';
 
 export const ALREADY_AUTHENTICATED_MESSAGE = 'You are already logged in.';
 
+export const PROFILE_GUEST_MESSAGE = 'Please log in to view your profile.';
+
 /** Runs session recovery first, so an expired or invalid session counts as a guest. */
 export function canOpenAuth(): boolean {
   if (validateSession() === null) return true;
@@ -28,6 +30,17 @@ export function guardAuthRoute(state: RouteState): boolean {
   if (state.authMode === null || canOpenAuth()) return true;
 
   router.setQuery({ [QUERY_KEYS.auth]: null }, { replace: true });
+
+  return false;
+}
+
+/** The profile page is members-only: a guest is sent Home and asked to log in. */
+export function guardProfileRoute(state: RouteState): boolean {
+  if (state.page !== 'profile' || validateSession() !== null) return true;
+
+  showSnackbar(PROFILE_GUEST_MESSAGE, 'warning');
+  router.navigate('/', { replace: true });
+  router.openAuth('login');
 
   return false;
 }

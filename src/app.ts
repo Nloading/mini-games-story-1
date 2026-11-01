@@ -8,9 +8,16 @@ import { createMobileNav } from '@/components/mobile-nav/mobile-nav';
 import { createHomePage } from '@/pages/home.page';
 import { createLibraryPage } from '@/pages/library.page';
 import { createNotFoundPage } from '@/pages/not-found.page';
-import { initSession, logout, subscribeSession, validateSession } from '@/auth/session-store';
+import { createProfilePage } from '@/pages/profile.page';
+import {
+  getSession,
+  initSession,
+  logout,
+  subscribeSession,
+  validateSession,
+} from '@/auth/session-store';
 import { showSnackbar } from '@/components/snackbar/snackbar';
-import { guardAuthRoute, openAuth } from '@/auth/auth-guard';
+import { guardAuthRoute, guardProfileRoute, openAuth } from '@/auth/auth-guard';
 
 function createPage(state: RouteState): HTMLElement {
   switch (state.page) {
@@ -18,6 +25,10 @@ function createPage(state: RouteState): HTMLElement {
       return createHomePage();
     case 'library':
       return createLibraryPage();
+    case 'profile': {
+      const session = getSession();
+      return session === null ? createNotFoundPage(state.path) : createProfilePage(session);
+    }
     case 'not-found':
       return createNotFoundPage(state.path);
   }
@@ -97,8 +108,13 @@ export function createApp(): HTMLElement {
     if (mode === 'login' || mode === 'register') openAuth(mode);
   });
 
+  let onProfilePage = false;
+
   router.subscribe((state, previous) => {
     validateSession();
+    if (!guardProfileRoute(state)) return;
+
+    onProfilePage = state.page === 'profile';
 
     if (needsNewPage(state, previous)) {
       view.replaceChildren(createPage(state));
@@ -132,9 +148,14 @@ export function createApp(): HTMLElement {
     if (slug) router.openGame(slug);
   });
 
-  subscribeSession((_session, event) => {
+  subscribeSession((session, event) => {
     if (event === 'expired') {
       showSnackbar('Your session has expired. Please log in again.', 'warning');
+    }
+
+    // Members-only page: logout, expiry and tampering all send the user Home.
+    if (session === null && onProfilePage) {
+      router.navigate('/', { replace: true });
     }
   });
 

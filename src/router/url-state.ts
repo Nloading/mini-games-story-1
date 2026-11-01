@@ -1,6 +1,6 @@
 import type { SortValue } from '@/api/types';
 
-export type PageName = 'home' | 'library' | 'not-found';
+export type PageName = 'home' | 'library' | 'profile' | 'not-found';
 export type AuthMode = 'login' | 'register';
 
 export const DEFAULT_SORT: SortValue = 'rating-desc';
@@ -23,6 +23,7 @@ const PAGE_BY_PATH = new Map<string, PageName>([
   ['/', 'home'],
   ['/home', 'home'],
   ['/library', 'library'],
+  ['/profile', 'profile'],
 ]);
 
 export interface LibraryQuery {
