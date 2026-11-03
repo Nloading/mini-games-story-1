@@ -36,20 +36,20 @@ function formatUnlockDate(timestamp: number): string {
 }
 
 function createBadge({ achievement, current, percent, unlockedAt }: AchievementState): HTMLElement {
-  const badge = createElement('li', 'badge');
+  const badge = createElement('li', 'achievement-badge');
   badge.classList.toggle('is-unlocked', unlockedAt !== null);
 
-  const icon = createElement('span', 'badge__icon', achievement.icon);
+  const icon = createElement('span', 'achievement-badge__icon', achievement.icon);
   icon.setAttribute('aria-hidden', 'true');
 
-  const bar = createElement('div', 'badge__bar');
+  const bar = createElement('div', 'achievement-badge__bar');
   bar.setAttribute('role', 'progressbar');
   bar.setAttribute('aria-label', `${achievement.title} progress`);
   bar.setAttribute('aria-valuemin', '0');
   bar.setAttribute('aria-valuemax', String(achievement.target));
   bar.setAttribute('aria-valuenow', String(current));
   bar.style.setProperty('--progress', `${percent}%`);
-  bar.append(createElement('span', 'badge__fill'));
+  bar.append(createElement('span', 'achievement-badge__fill'));
 
   const status =
     unlockedAt === null
@@ -58,10 +58,10 @@ function createBadge({ achievement, current, percent, unlockedAt }: AchievementS
 
   badge.append(
     icon,
-    createElement('h3', 'badge__title', achievement.title),
-    createElement('p', 'badge__description', achievement.description),
+    createElement('h3', 'achievement-badge__title', achievement.title),
+    createElement('p', 'achievement-badge__description', achievement.description),
     bar,
-    createElement('p', 'badge__status', status)
+    createElement('p', 'achievement-badge__status', status)
   );
 
   return badge;

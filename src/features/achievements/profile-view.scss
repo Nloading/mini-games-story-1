@@ -84,7 +84,7 @@ $bar-transition: 300ms;
   }
 }
 
-.badge {
+.achievement-badge {
   display: flex;
   flex-direction: column;
   gap: $space-1;
@@ -138,12 +138,12 @@ $bar-transition: 300ms;
     border-color: $color-primary-high;
     background-color: $color-surface;
 
-    .badge__icon {
+    .achievement-badge__icon {
       filter: none;
       opacity: 1;
     }
 
-    .badge__status {
+    .achievement-badge__status {
       color: $color-price-free;
     }
   }

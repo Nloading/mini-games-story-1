@@ -23,7 +23,7 @@ describe('profile view', () => {
 
     expect(view.querySelector('h1')?.textContent).toBe('Ann');
     expect(view.querySelectorAll('.stat-card')).toHaveLength(5);
-    expect(view.querySelectorAll('.badge.is-unlocked')).toHaveLength(1);
+    expect(view.querySelectorAll('.achievement-badge.is-unlocked')).toHaveLength(1);
     expect(view.querySelector('.profile-view__summary')?.textContent).toBe(
       '1 of 6 achievements unlocked'
     );
