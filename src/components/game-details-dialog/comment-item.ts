@@ -4,6 +4,7 @@ import { toggleCommentLike } from '@/api/endpoints';
 import type { GameComment } from '@/api/types';
 import { getErrorMessage, isOutcomeUnknownError } from '@/api/http';
 import { requireSession } from '@/auth/protected-action';
+import { bus } from '@/features/achievements/events';
 import { showSnackbar } from '@/components/snackbar/snackbar';
 import { getAvatarInitial } from '@/utils/avatar';
 import { formatRelativeTime } from '@/utils/relative-time';
@@ -79,6 +80,7 @@ export function createCommentItem(comment: GameComment, avatarVariant: number): 
     try {
       const { data } = await toggleCommentLike(comment.commentId, session.email);
       state = { isLiked: data.isLikedByCurrentUser, likesCount: data.likesCount };
+      if (state.isLiked) bus.emit('comment:liked', { commentId: comment.commentId });
     } catch (error) {
       if (isOutcomeUnknownError(error)) {
         showSnackbar(UNKNOWN_OUTCOME_MESSAGE, 'warning');

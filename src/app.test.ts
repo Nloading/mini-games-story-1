@@ -10,6 +10,7 @@ vi.mock('./router/router', () => ({
   router: {
     subscribe: vi.fn(),
     start: vi.fn(),
+    navigate: vi.fn(),
     closeDialog: vi.fn(),
     openGame: vi.fn(),
   },
@@ -51,10 +52,14 @@ vi.mock('@/pages/home.page', () => ({
 vi.mock('@/pages/library.page', () => ({
   createLibraryPage: () => document.createElement('section'),
 }));
+vi.mock('@/pages/profile.page', () => ({
+  createProfilePage: () => document.createElement('section'),
+}));
 vi.mock('@/pages/not-found.page', () => ({
   createNotFoundPage: () => document.createElement('section'),
 }));
 vi.mock('@/auth/session-store', () => ({
+  getSession: vi.fn(() => null),
   initSession: vi.fn(),
   logout: mocks.logout,
   subscribeSession: (listener: (session: null, event: string) => void) => {
@@ -68,6 +73,7 @@ vi.mock('@/components/snackbar/snackbar', () => ({
 }));
 vi.mock('@/auth/auth-guard', () => ({
   guardAuthRoute: vi.fn(() => true),
+  guardProfileRoute: vi.fn(() => true),
   openAuth: vi.fn(),
 }));
 

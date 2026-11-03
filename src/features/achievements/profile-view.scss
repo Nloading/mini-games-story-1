@@ -1,0 +1,150 @@
+@use '../../styles/abstracts' as *;
+
+$locked-opacity: 0.6;
+$bar-transition: 300ms;
+
+.profile-view {
+  &__inner {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+    padding-block: $space-6;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-display-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    overflow-wrap: anywhere;
+  }
+
+  &__email {
+    margin: 0;
+    font-size: $font-body-medium;
+    color: $color-on-bg-low;
+    overflow-wrap: anywhere;
+  }
+
+  &__summary {
+    margin: 0;
+    font-size: $font-body-large;
+    font-weight: $font-weight-bold;
+    color: $color-tertiary;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($size-15, 1fr));
+    gap: $space-2;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: $font-headline-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+  }
+
+  &__badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax($size-15 * 2, 1fr));
+    gap: $space-2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: $size-05;
+  padding: $space-2;
+  border: $border-width-medium solid $color-outline;
+  border-radius: $radius-medium;
+  background-color: $color-bg-card;
+
+  &__value {
+    font-size: $font-headline-large;
+    font-weight: $font-weight-extra-bold;
+    color: $color-on-primary;
+  }
+
+  &__label {
+    font-size: $font-body-small;
+    color: $color-on-bg-low;
+  }
+}
+
+.achievement-badge {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  padding: $space-3;
+  border: $border-width-medium solid $color-outline;
+  border-radius: $radius-large;
+  background-color: $color-bg-card;
+
+  &__icon {
+    font-size: $font-display-small;
+    filter: grayscale(1);
+    opacity: $locked-opacity;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-body-large;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+  }
+
+  &__description {
+    margin: 0;
+    font-size: $font-body-small;
+    color: $color-on-bg;
+  }
+
+  &__bar {
+    height: $size-1;
+    overflow: hidden;
+    border-radius: $radius-full;
+    background-color: $color-outline;
+  }
+
+  &__fill {
+    display: block;
+    width: var(--progress);
+    height: 100%;
+    background-color: $color-primary-high;
+    transition: width $bar-transition;
+  }
+
+  &__status {
+    margin: 0;
+    font-size: $font-label-large;
+    font-weight: $font-weight-medium;
+    color: $color-on-bg-low;
+  }
+
+  &.is-unlocked {
+    border-color: $color-primary-high;
+    background-color: $color-surface;
+
+    .achievement-badge__icon {
+      filter: none;
+      opacity: 1;
+    }
+
+    .achievement-badge__status {
+      color: $color-price-free;
+    }
+  }
+}

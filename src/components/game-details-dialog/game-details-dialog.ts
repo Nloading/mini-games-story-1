@@ -10,6 +10,7 @@ import { loadIntoRegion } from '@/utils/async-region';
 import { formatRelativeTime } from '@/utils/relative-time';
 import { escapeHtml } from '@/utils/html';
 import { getSession, subscribeSession } from '@/auth/session-store';
+import { bus } from '@/features/achievements/events';
 import { createFavoriteControl } from './favorite-control';
 import { createCommentsSection } from './comments-section';
 
@@ -139,6 +140,7 @@ function renderDetails(game: GameDetails): HTMLElement {
 async function loadGame(slug: string, signal: AbortSignal): Promise<GameDetails | null> {
   try {
     const response = await fetchGameDetails(slug, getSession()?.email, signal);
+    bus.emit('game:opened', { gameSlug: response.data.slug });
 
     return response.data;
   } catch (error) {

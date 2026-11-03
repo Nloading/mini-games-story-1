@@ -42,6 +42,16 @@
   color: $color-on-primary;
   font-size: $font-body-small;
   font-weight: $font-weight-bold;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
 }
 
 .profile__logout {
