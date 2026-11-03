@@ -4,11 +4,20 @@ $toast-transition: 300ms;
 
 .achievement-toasts {
   position: fixed;
-  right: $space-3;
-  bottom: $space-3;
-  display: flex;
-  flex-direction: column;
-  gap: $space-1;
+  inset: $space-2 $space-2 auto auto;
+  width: calc(100% - #{$space-4});
+  max-width: $size-15 * 3;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+
+  &:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
 }
 
 .achievement-toast {

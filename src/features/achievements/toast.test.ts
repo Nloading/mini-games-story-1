@@ -22,10 +22,13 @@ describe('achievement toast', () => {
 
     const region = document.querySelector('.achievement-toasts');
     expect(region?.getAttribute('aria-live')).toBe('polite');
+    expect(region?.getAttribute('popover')).toBe('manual');
+    expect(region?.getAttribute('data-popover-open')).toBe('true');
     expect(region?.textContent).toContain(achievement.title);
 
     vi.runAllTimers();
 
     expect(document.querySelector('.achievement-toast')).toBeNull();
+    expect(region?.getAttribute('data-popover-open')).toBeNull();
   });
 });
